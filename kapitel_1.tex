@@ -1,0 +1,198 @@
+\chapter{Lineare Programme}
+\section{Einleitung}
+\begin{definition}
+Seien 
+\begin{itemize}
+\item $A$ eine ganzzahlige $m\times n$-Matrix mit den Zeilenvektoren $a_i^T$
+\item $\{M_1,M_2\}$ eine Partition von $\laue{m}$
+\item $\{N_1,N_2\}$ eine Partition von $\laue{n}$
+\item $x \in \mathbb R^n, b,c \in \mathbb Z^n$
+\end{itemize}
+Dann heißt das Problem $\min(c^Tx = \sum_{i=1}^m c_ix)$ mit den Randbedingungen
+\begin{align*}
+a_i^Tx &= b_i \; &\forall i \in M_1 \\
+a_i^Tx &\geq b_i \; &\forall i \in M_2 \\
+x_j &\geq 0 \; &\forall j \in N_1 \\
+x_j &\gtrless 0 \; &\forall j \in N_1 \\
+\end{align*}
+\Begriff{allgemeines Lineares Programm} oder kurz allgemeines LP-Problem.\newline %
+Für $M_1 = N_2 = \emptyset$ ist es in \Begriffx{kanonische Form}{kanonischer Form}.\newline %
+Für $M_2 = N_2 = \emptyset$ ist es in \Begriff{standard Form}.
+\end{definition}
+
+\begin{theorem}
+Alle drei Formen des LP-Problems sind äquivalent ( d.h. können ineinander überführt werden ).
+\end{theorem}
+\begin{proof}
+Da LP-Probleme in kanonischer und standard Form automatisch auch allgemeine LP-Probleme sind, reicht es zu zeigen, dass jedes allgemeine LP-Problem in ein Problem in kanonischer und standard Form überführt werden kann.
+\begin{enumerate}
+\item{\textit{allgemeine in kanonische Form}} \newline
+Die Umwandlung erfolgt durch Ersetzen von Bedingungen durch äquivalente Bedingungen. Dabei muss das Gleichungssystem (Matrix) um zusätzliche Gleichungen (Zeilen) und Variablen (Spalten) erweitert werden.
+Alle Randbedingungen der Form $a_i^Tx = b_i$ sind äquivalent zu $a_i^Tx \geq b_i \land -a_i^Tx \geq -b_i$. Die Matrix erweitert sich folglich um $\lvert M_1 \rvert$ Zeilen. Für alle Randbedingungen der Form $x_j \gtrless 0$ definiere zwei Variablen:
+\begin{align*}
+ x_j^{+} &\colon= \begin{cases} %
+x_j & \text{für } x_j > 0 \\
+0 &\text{sonst}
+\end{cases} \\
+ x_j^{-} &\colon= \begin{cases} %
+-x_j & \text{für } x_j < 0 \\
+0 &\text{sonst}
+\end{cases}
+\end{align*}
+Folglich gilt $x_j = x_j^{+} - x_j^{-}$. Die Bedingung $x_j \gtrless 0$ ist folglich äquivalent zu $x_j^{+} \geq 0 \land x_j^{-} \geq 0$. Die Matrix erweiter sich also nochmals um $\lvert N_1 \rvert$ Spalten (da wir eine Variable mehr haben) und der Vektor $x$ um ebensoviele Komponenten. Das entstandene Problem ist in kanonischer Form.
+\item{\textit{allgemeine in standard Form}} \newline
+siehe Übung
+\end{enumerate}
+\end{proof}
+
+\section{Standard Form}
+Wir betrachten zunächst ein Problem in standard Form unter folgenden Vorraussetzungen:
+\begin{enumerate}[(a)]
+	\item $rang(A) = m$\label{vorr:a}
+	\item die Menge der zulässigen Punkte $F = \{x| Ax=b, x\geq0\}$ ist nicht leer\label{vorr:b}
+	\item die Menge der Werte der Zielfunktion $\{c^T|x \in F\}$ ist nach unten beschränkt\label{vorr:c}
+\end{enumerate}
+\begin{definition}
+Eine \Begriff{Basis} $B$ von $A$ ist eine Auswahl von linear unabhängigen Spaltenvektoren aus $A$. Alternativ entspricht $B$ einer regulären $m\times n$-Matrix.
+Die \Begriff{Basislösung} zu $B$ ist ein Vektor $x\in \mathbb R^n$ mit 
+\begin{align*}
+x_{j_k} &= \begin{cases}
+t_k &\text{wenn }A_{j_k} \in B \\
+0 &\text{sonst}
+\end{cases}\\
+t &= B^{-1}b
+\end{align*}
+\end{definition}
+
+Eine Basislösung $x$ zu einer Matrix $A$ können wir wie folgt berechnen:
+\begin{enumerate}
+\item Wähle eine Basis $B$ von $A$
+\item Setze alle Komponenten von $x$, die nicht zu den gewählten Spalten aus $B$ gehören auf $0$.
+\item Löse das resultierende Gleichungssystem, um die restlichen Komponenten von $x$ zu bestimmen.
+\end{enumerate}
+
+\begin{lemma}
+Es sei $x = (x_1,\dotsc,x_n)$ eine Basislösung, $\alpha = \max\limits_{i\in \laue{m},j\in \laue{n}}\{\lvert a_{i,j} \rvert\}$ und $\beta = \max\limits_{j\in \laue{n}}\{\lvert b_j \rvert\}$. Dann gilt $\lvert x_j \rvert \leq m!\alpha^{m-1}\beta$ und $x_j \in \mathbb Q$.
+\end{lemma}
+\begin{proof}
+Für eine Nicht-Basiskomponente gilt die Aussage, da diese per Definition $0$ sind. Die Basiskomponente $x_j$ ist die Summe von $m$ Produkten von Elementen von $B^{-1}$ und $b$. Nach Definition der Inversen gilt:
+\begin{align*}
+B^{-1} = \frac{1}{\det B}\adj(B) &= \frac{1}{\det B} \begin{pmatrix}
+\mathcal B_{1,1} & \dots & \mathcal B_{1,m} \\
+\vdots & \ & \vdots \\
+\mathcal B_{m,1} & \dots & \mathcal B_{m,m}
+\end{pmatrix}
+\end{align*}
+wobei $\mathcal B_{i,j}$ das Produkt von $(-1)^{i+j}$ und der Determinanten der Matrix ist, die durch Streichen der $i$-tem Zeile und $j$-ten Spalte aus $B$ entsteht.
+Aufgrund des Entwicklungssatzes für Determinanten ist $\mathcal B_{i,j}$ die Summe von $(m-1)!$ Produkten von $m-1$ Elementen aus $A$. Somit gilt:
+\begin{align*}
+\lvert \mathcal B_{i,j} \rvert &\leq (m-1)!\alpha^{m-1} &&\text{da alle Elemente von $A$ $\leq \alpha$ sind}\\
+\lvert x_j \rvert &= \left \lvert  \sum_{i \in \laue{m}} B^{-1}_{i,j} b_i \right \rvert &&\text{nach Definition}\\
+&=\frac{1}{\det B}\left \lvert  \sum_{i \in \laue{m}} \mathcal B_{i,j} b_i \right \rvert \\
+&\leq\frac{1}{\det B} \left \lvert  \sum_{i \in \laue{m}} (m-1)!\alpha^{m-1} b_i \right \rvert\\
+&=\frac{1}{\det B}\left \lvert  m \cdot (m-1)!\alpha^{m-1} \cdot \beta \right \rvert \\
+&=\frac{1}{\det B} m \cdot (m-1)!\alpha^{m-1} \cdot \beta &&\text{da alle Faktoren $\geq 0$ sind}
+\end{align*}
+Da $\det B$ ganzzahlig ist, folgt $\det B \geq 1$.
+\end{proof}
+
+\begin{theorem}
+Unter der Vorraussetzungen \ref{vorr:a} und \ref{vorr:b} existert mind. eine Basislösung.
+\end{theorem}
+\begin{proof}
+\textbf{Annahme:} Es existiert eine Lösung $x \in F$ mit $t > m$ Nicht-Null-Komponenten und es gibt keine Lösung $x' \in F$ mit weniger Nicht-Null-Komponenten.\newline\newline
+Wir können O.B.d.A. annehmen, dass die ersten $t$ Komponenten von $x$ größer als $0$ sind und die restlichen Komponenten gleich $0$ sind (wenn nicht können wir dies durch Vertauschung erreichen).
+Es gilt also $x_1,\dotsc,x_t > 0$ und $x_{t+1}, \dotsc,x_n=0$.
+Hierraus folgt:
+\begin{align}
+b &= A_1x_1 + \dotsc + A_nx_n = A_1x_1 + \dotsc + A_tx_t \label{eq:x_n_t}
+\end{align}
+Es sei nun $r$ der Rang der Matrix $\lbrack A1, \dotsc, A_t\rbrack$. Wenn $r = 0$ wäre, so wäre $\vec 0$ eine zulässige Basislösung mit weniger Nicht-Null-Komponenten als $x$. Damit die Annahme stimmen kann muss also $0 < r \leq m < t$ gelten.
+Mit dem Gauß-Jordan-Verfahren lassen sich nun die ersten $r$ Zeilen und Spalten in eine reguläre Form überführen. Das Problem sieht nun wie folgt aus:
+\begin{align*}
+\begin{pmatrix}
+1 & & 0 & -\overline{a}_{1,r+1} &\hdots & -\overline{a}_{1,t} \\
+ & \ddots & & \vdots & \ddots & \vdots \\
+0 & & 1 & -\overline{a}_{r,r+1} &\hdots & -\overline{a}_{r,t} \\
+? &&& \hdots && ?\\
+\vdots &&&&&\\
+?&&&&&\\
+\end{pmatrix}\begin{pmatrix}
+x_1\\
+\vdots\\
+x_r\\
+\vdots
+\end{pmatrix}&=\begin{pmatrix}
+\overline{b}_1\\
+\vdots\\
+\overline{b}_r\\
+\vdots
+\end{pmatrix}
+\end{align*}
+
+Es lässt sich nun \eqref{eq:x_n_t} schreiben als:
+\begin{align}
+x_j &= \overline{b_j} + \sum_{i=r+1}^t \overline{a_{j,i}} x_i  &\text{für } j &={1,\dotsc,r}
+\end{align}
+Setze $\Theta = \min( x_{r+1}, \Theta_1)$ mit $\Theta_1 = \min( \frac{x_j}{\overline{a}_{j,r+1}}, j=1,\dotsc,r, \overline{a}_{j,r+1}>0 )$.
+Konstruiere eine neue Lösung $\hat{x}$:
+\begin{align}
+\hat{x}_j &= \begin{cases}
+\overline{b}_j + \sum_{i=r+1}^t \overline{a}_{j,i} \hat{x_i} & \text{für } j < r+1 \\
+x_j - \Theta & \text{für }  j=r+1\\
+x_j & \text{für }  j>r+1
+\end{cases}
+\end{align}
+Diese erfüllt das Gleichungssystem.
+Dann gilt für $j<r$:
+\begin{align}
+\hat{x}_j &= \overline{b}_j + \sum_{i=r+1}^t \overline{a}_{j,i} \hat{x}_i && j < r+1 \\
+&= \overline{b}_j + \hat{a}_{j,r+1}(x_{r+1} - \Theta ) + \sum_{i=r+1}^t \overline{a}_{j,i} \hat{x}_i && j < r+1 \\
+&= \underbrace{ \overline{b}_j + \sum_{i=r+1}^t \overline{a}_{j,i}\hat{x}_i }_{x_j} - \Theta\overline{a}_{j,r+1}
+\end{align}
+Ist $\Theta = x_{r+1}$, so ist $\hat{x}_{r+1} = 0$. Ist $\Theta = \Theta_1 = \frac{x_k}{\overline{a}_{k,r+1}}$. mit $k \leq r$, so ist %
+ $\hat{x}_k = x_k - \Theta \overline{a}_{k,r+1} = 0$.
+Für die Zulässigkeit ist noch zu zeigen: $\hat{x}_j \geq 0 \forall j \leq r + 1$.
+Sehen wir uns $\hat{x}_{r+1}$ an:
+Nach Definition: $\hat{x}_{r+1} = x_{r+1} - \Theta \geq \Theta - \Theta = 0$
+\begin{align}
+\hat{x}_j &= x_j - \Theta\overline{a}_{j,r+1} \\
+&\geq \begin{cases}
+ x_j + \Theta \lvert \overline{a}_{j,r+1} \rvert > 0 & \overline{a}_{j,r+1} \leq 0 \\
+ x_j - \frac{x_j}{\overline{a}_{j,r+1}} \overline{a}_{j,r+1} = 0 & \overline{a}_{j,r+1} > 0
+\end{cases}
+\end{align}
+Insgesamt ist $\hat{x}$ eine zulässige Lösung mit einer Nicht-Nullkomponente weniger als $x$, was ein Widerspruch zur Annahme ist.
+\end{proof}
+Es gibt also eine Lösung $x \in F$ mit $t\leq m$ Nicht-Nullkomponentent. O.B.d.A sind die zugehörigen Spalten linear unabhängig ( ansonsten Arg. oben mit Elimination von Variablen bzw. Gleich 0 setzen wiederholen ).
+Falls $t < m$ ist, erweitere die Spalten zu einer Basis für $x$. ( Austauschsatz von Steinitz )
+
+\begin{theorem}
+Unter der Vorraussetzungen \ref{vorr:a},\ref{vorr:b} und \ref{vorr:c} ist das Lineare Programm $\min(c^Tx), Ax=b, x \geq 0$ äquivalent zu $\min(c^Tx), Ax=b, x \geq 0, x\leq M$ wobei %
+$M = (m+1)!\alpha^m\beta$ mit $\alpha = max(\lvert a_{i,j}\rvert,\lvert c_{j}\rvert), \beta = max(\lvert b_i\rvert, \lvert z\rvert)$ und $z$ die Größte untere Schranke von $\{c^Tx | Ax=b, x \geq 0\}$ ist. 
+\end{theorem}
+
+\begin{quote}
+In diesem Fall ist äquivalent zu verstehen als Gleichheit der Lösungsmengen. Es ist also jede Lösung des ersten Problems auch eine Lösung des zweiten Problems und umgekehrt.
+\end{quote}
+
+\section{Geometrie von Linearen Programmen}
+
+Ein \Begriff{linearer Teilraum} S des $\mathbb R^d$ ist eine Teilmenge von $\mathbb R^b$, die bezüglich der Vektoraddition und Skalarmultiplikation abgeschlossen ist. Ein \Begriff{affiner Teilraum} A des $\mathbb R^d$ ist ein linearer Teilraum $S$, verschoben um einen Vektor $u \in \mathbb R^d$: $A=\{u+x|x \in S\}$.
+Die Dimension eines linearen Teilraumes S ist gleich der maximale Zahl von linear unabhängigen Vektoren in S. Ebenso bei affinen Teilräumen. Die Dimension irgendeiner Menge X ist die kleinste Dimension eines affinen Teilraums, der X enthält. Äquivalent können wir einen affinen bzw. linearen Teilraum des $\mathbb R^d$ wie folgt darstellen: $A = \{ x \in \mathbb R^d | a_i^Tx = b_i , 1 \leq i \leq m \}$ bzw. $S = \{ x \in \mathbb R^d | a_i^Tx = 0 , 1 \leq i \leq m \}$.
+Zum Beispiel hat eine Kante die Dimension 1 und ein Menge von k Punkten höchstens die Dimension k-1.
+Ein affiner Teilraum des $\mathbb R^d$ der Dimension $d-1$ wird als \Begriff{Hyperebene} bezeichnet. Alternativ ist dies eine Menge von Punkten $H=\{x \in \mathbb R^d |a^Tx=b\}$ mit $a \neq 0$. Eine Hyperebene definiert zwei \Begriff{abgeschlossene Halbräume} $H^{+} = \{x \in \mathbb R^d |a^Tx \geq b\}$ und $H^{-} = \{x \in \mathbb R^d |a^Tx \leq b\}$.
+Der Durchschnitt von endl. vielen Halbräumen wird bezeichnet als ein \Begriff{Polyeder}. Ein Polyeder heißt \Begriff{Polytop}, wenn es beschränkt ist.
+
+Es sei $P$ ein Polytop der Dimension $d$ im $\mathbb R^d$ und es sein $H \in \mathbb R^d$ eine Hyperebene. So ist $F = P \cap H$ eine Seitenfläche von $P$, wenn $H$ mindestens einen Punkt gemeinsam mit $P$ hat und wenn $P$ in höchstens einem der beiden Halbräumen $H^{+}$ und $H^{-}$ liegt. Es gibt drei wichtige Fälle:
+\begin{enumerate}
+\item eine \Begriff{Facette}, d.h. eine Seitenfläche der Dimension $d-1$.
+\item eine \Begriff{Ecke}, d.h. eine Seitenfläche der Dimension $0$.
+\item eine \Begriff{Kante}, d.h. eine Seitenfläche der Dimension $1$.
+\end{enumerate}
+Beispiel: ein Würfel im $\mathbb R^3$ ist gegeben durch $P = \{(x_1,x_2,x_3) | 0 \leq x_i1 \leq 1, i=1,2,3\}$. Dieser Würfel hat 6 Facetten, 8 Ecken und 12 Kanten.
+\begin{align*}
+F_1 &= P \cap \{(x_1,x_2,x_3) | x_3 = 1 \} && \text{Facette} \\
+F_2 &= P \cap \{(x_1,x_2,x_3) | x_1 - x_3 = 1 \} && \text{Ecke} \\
+F_3 &= P \cap \{(x_1,x_2,x_3) | x_1 + x_2 + x_3 = 1 \} && \text{Kante}
+\end{align*}

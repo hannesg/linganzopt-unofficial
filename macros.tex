@@ -1,0 +1,56 @@
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{caption}
+\usepackage[german]{babel}
+\usepackage{fontenc}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{makeidx}
+\usepackage{fancyhdr}
+\usepackage[ bookmarks=true, bookmarksopen=true , colorlinks=false]{hyperref}
+\usepackage{enumerate}
+
+\usepackage{listings}
+\usepackage{fancyhdr}
+
+\makeindex
+
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+
+\newcounter{Vorlesung}
+\newcommand{\Vorlesung}[1]{%
+  \stepcounter{Vorlesung}\small Vorlesung vom #1\newline}
+
+\newcommand{\Begriffx}[2]{%
+  \marginpar{#1}\textbf{#2} \index{#1}}
+
+\newcommand{\Begriff}[1]{%
+  \marginpar{#1}\textbf{#1} \index{#1}}
+
+\newcounter{SatzDefinitionKapitel}
+\setcounter{SatzDefinitionKapitel}{1}
+\newcounter{SatzDefinition}[SatzDefinitionKapitel]
+\setcounter{SatzDefinition}{1}
+
+\newtheorem{theorem}{Satz}[SatzDefinition]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+
+
+\newenvironment{example}[1][Beispiel]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Anmerkung]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\def\laue#1{\underline{#1}{\raise -0.4ex\hbox{\vphantom{$#1$}\vrule height 1.3ex}}}
+
+\DeclareMathOperator{\adj}{Adj}
+
+
+
