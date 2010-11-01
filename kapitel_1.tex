@@ -237,18 +237,80 @@ Nach unserer Vorraussetzung sind die ersten $n-m$ Ungleichungen von der Form $x_
 Verwende positive Schlupfvariablen $x_{n-m+1}, \dotsc , x_n$ und erhalte:
 \begin{align*}
 h_{i,1} x_1 + \dotsc + h_{i,n-m} x_{n-m} + x_i &= g_i & i = n-m+i,\dotsc,n
-\end{align*}
+\end{align*} 
 Nun kann man dieses Problem als LP-Problem schreiben. Bilde dazu $A = ( H, I )$ (ein $m\times n$-Matrix) und erhalte das folgende System:
 \begin{align*}
+A &= \begin{pmatrix}
+h_{1,1} & \hdots & h_{1,n-m} & 1 && 0\\
+\vdots & \ddots & \vdots && \ddots & \\
+h_{i,1} & \hdots & h_{i,n-m} & 0 && 1
+\end{pmatrix}\\
 Ax &= b\\
 x &\geq 0\\
 b &= (g_{n-m+1},\dotsc,g_n)^T
 \end{align*}
+\begin{definition}\label{def:umwandlung_punkt_vektor}
 Der $x$-Vektor in den Halbraumdurchschnitten hatte nur die Dimension $n-m$, der $x$-Vektor des LP-Problems hatte die Dimension $n$. 
 Jeder Punkt $\hat{x} \in (x_1,...,x_{n-m})^T \in P$ kann transformiert werden zu einem Punkt aus $F$ mit $n$ Komponenten. Dazu muss man lediglich die Schlupfvariablen ausrechnen:
 \begin{align*}
 x_i &= g_i - \sum_{j=1}^{n-m} h_{i,j}x_j & \text{für $i=n-m+1,\dotsc,n$}
 \end{align*}
 Ungekehrt wird ein $x\in F$ durch weglassen der letzten $m$ Komponenten zu einem Punkt $\hat{x} \in P$.
+\end{definition}
+\begin{theorem}
+Es sei $P$ ein nicht-leeres Polytop, $F=\{x | Ax = b, x\geq 0\}$ der zugehörige zulässige Bereich eines LP und $\hat{x} = (x_1,\dotsc,x_{n-m})^T \in P$. Dann sind äquivalent:
+\begin{enumerate}[a)]
+\item Der Punkt $\hat{x}$ ist eine Ecke von $P$.
+\item Wenn $\hat{x} = \lambda \hat{x}^1 + (1-\lambda)\hat{x}^2$ mit $\hat{x}^1,\hat{x}^2 \in P$ und $0 < \lambda < 1$, dann gillt $\hat{x} = \hat{x}^1 = \hat{x}^2$.
+\item Der zugeordnete Vektor $x \in \mathbb R^n$, definiert durch \ref{def:umwandlung_punkt_vektor} ist eine zulässige Basislösung von $F$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
 
+\textbf{a $\Rightarrow$ b:} siehe Übung
 
+\textbf{b $\Rightarrow$ c:}
+$\hat{x}$ habe die Eigenschaft $b$.
+Betrachte den zugeordneten Punkt $x \in F$ und die Menge $B= \{A_j | x_j > 0; j=1,\dotsc,n \}$.
+Wir wollen zeigen, dass $B$ eine linear unabhängige Menge von Spalten ist. \newline
+\textit{Annahme:} $B$ ist eine linear abhängige Menge von Spaltenvektoren.\newline
+Dann gibt es Zahlen $\lambda_j$ ( nicht alle 0 ) mit $\sum_{A_j \in B} \lambda_j A_j = 0$. Da $x \in F$ gilt, gilt  $\sum_{A_j \in B} x_j A_j = b$ und $x_j \geq 0$. Dann gilt für jedes $\theta \in \mathbb R$:
+\begin{align*}
+\sum_{A_j \in B} (x_j \pm \theta\lambda_j) A_j &= b
+\end{align*}
+Da $x_j > 0$ für alle $A_j \in B$, gibt es ein $\theta > 0$ mit $x_j \pm \theta \lambda_j \geq 0 \forall A_j \in B$. Dann gibt es aber zwei Punkte $x^1, x^2 \in F$, definiert durch:
+\begin{align*}
+x_j^i &= \begin{cases}
+x_j + (-1)^i \theta \lambda & A_j \in B \\
+0 &\text{sonst}
+\end{cases}
+& i=1,2
+\end{align*}
+Da gilt:
+\begin{align*}
+x &= \frac{1}{2} x^1 + \frac{1}{2} x^2 
+\end{align*}
+Für die zugeordneten Punkte $\hat{x}^1, \hat{x}^2 \in P$ gilt $
+\hat{x} = \frac{1}{2} \hat{x}^1 + \frac{1}{2} \hat{x}^2$, da diese durch Weglassung von Komponenten entstehen. Jedoch gilt $\hat{x}^1 \neq \hat{x}^2$. Also ist $B$ eine Menge von linear unabhängigen Spaltenvektoren mit $\lvert B \rvert \leq m$ und kann zu einer Basis erweitert werden.
+
+\textbf{c $\Rightarrow$ a:}
+Wenn $y = (y_1, \dotsc, y_n)^T$ eine zulässige Basislösung von $Ax = b, x  \geq 0$ ist, so gibt es einen Kostenvektor $c$, so dass $y$ der eindeutige Lösungsvektor des Systems $c^Tx \leq c^Ty, Ax=b, x\geq 0$ ist. Wir benutzen \ref{def:umwandlung_punkt_vektor} um hierraus Bedingungen für Punkte aus dem Polytop $P$ zu gewinnen:
+\begin{align*}
+c^Tx &= \sum_{i=1}^n c_ix_i \\
+&=\sum_{i=1}^{n-m} c_ix_i + \sum_{i=n-m+1}^n c_ix_i \\
+&=\sum_{i=1}^{n-m} c_ix_i + \sum_{i=n-m+1}^n c_i \left ( g_i - \sum_{j=1}^{n-m} h_{i,j}x_j \right )
+\end{align*}
+Fassen wir die Koeffizienten von $x_j$ jeweils zusammen, so bekommen wir:
+\begin{align*}
+d_j &= c_j - \sum_{i=n-m+1}^n c_i h_{i,j}
+\end{align*}
+Es folgt dann, dass $\hat{y} = (y_1,\dotsc,y_{n-m})$ der eindeutige Punkt im $\mathbb R^{n-m}$ ist mit
+\begin{align*}
+d^T\hat{x} &\leq d^T\hat{y} \forall \hat{x} \in P
+\end{align*}
+Also ist $\hat{x}$ eine Ecke von $P$.
+\begin{quotation}
+Die Menge der $\hat{x}$, für die $d^T\hat{x} = d^T\hat{y}$ gilt, bilden eine Hyperebene. Da der Schnittpunkt dieser Hypereben mit $P$ exakt einen Punkt hat ( nämlich $\hat{y}$ ) und $P$ komplett auf einer Seite dieser Hyperebene liegt ( nämlich $d^T\hat{x} \geq d^T\hat{y} \forall \hat{x} \in P$ ), ist $\hat{y}$ eine Ecke vom $P$. 
+\end{quotation}
+
+\end{proof}
