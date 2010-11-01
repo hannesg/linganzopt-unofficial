@@ -13,7 +13,7 @@ Dann heißt das Problem $\min(c^Tx = \sum_{i=1}^m c_ix)$ mit den Randbedingungen
 a_i^Tx &= b_i \; &\forall i \in M_1 \\
 a_i^Tx &\geq b_i \; &\forall i \in M_2 \\
 x_j &\geq 0 \; &\forall j \in N_1 \\
-x_j &\gtrless 0 \; &\forall j \in N_1 \\
+x_j &\gtrless 0 \; &\forall j \in N_2 \\
 \end{align*}
 \Begriff{allgemeines Lineares Programm} oder kurz allgemeines LP-Problem.\newline %
 Für $M_1 = N_2 = \emptyset$ ist es in \Begriffx{kanonische Form}{kanonischer Form}.\newline %
@@ -196,3 +196,59 @@ F_1 &= P \cap \{(x_1,x_2,x_3) | x_3 = 1 \} && \text{Facette} \\
 F_2 &= P \cap \{(x_1,x_2,x_3) | x_1 - x_3 = 1 \} && \text{Ecke} \\
 F_3 &= P \cap \{(x_1,x_2,x_3) | x_1 + x_2 + x_3 = 1 \} && \text{Kante}
 \end{align*}
+\subsection{Umwandlung}
+\begin{theorem}
+\label{theorem:polytop_huelle}
+\begin{enumerate}
+\item Jedes Polytop ist die konvexe Hülle seiner Ecken.
+\item Ist $V$ eine endliche Menge von Punkten/Vektoren, so ist die konvexe Hülle von $V$ ein Polytop.
+\end{enumerate}
+\end{theorem}
+\begin{definition}
+\Begriff{konvexe Hülle}
+\begin{align*}
+conv(V) &= \Big \{ \sum_{i=1}^k \lambda_i v_i \Big | v_i \in V, \lambda_i \geq 0, \sum_{i=1}^k \lambda_i = 1 \Big \}
+\end{align*}
+\end{definition}
+Wir sind hauptsächlich interessiert an Polytopne, die im positiven Oktanten liegen. D.h. die ersten d-Halbräume sind definiert durch $x_j \geq 0 ( j = 1,\dotsc,d)$.
+Wegen \ref{theorem:polytop_huelle} kann ein Polytop $P$ auf verschiedene Weisen dargestellt werden:
+\begin{enumerate}[a)]
+\item als konvexe Hülle einer endlichen Punktemenge
+\item als Durchschnitt von endlich vielen Halbräumen ( der zusätzlich beschränkt ist )
+\item als zulässiger Bereich eines LP-Problems ( algebraische Darstellung )
+\end{enumerate}
+\paragraph*{Umwandlung LP-Problem in Durchschnitt von Halbräumen}
+Es sei $F = \{ x | Ax = b , x \geq 0 \}$ der zulässige Bereich eines LP-Problems. Wir setzen vorraus, dass die Bedingungen \ref{vorr:a},\ref{vorr:b} und \ref{vorr:c} erfüllt sind. Da $rang(A) = m$ gilt, können wir O.B.d.A. annehmen, dass die Gleichungen $Ax=b$ in der folgenden Form vorliegen:
+\begin{align}
+x_{i+n-m} &= b_i - \sum_{j=1}^{n-m} a_{i,j}x_j & i = 1,\dotsc,m
+\end{align}
+Die Umformung erfolgt über Gauß-Jordan. Die Matrix enthält also einen Einheitsmatrix-Bereich im rechts-oberen Teil. Wegen der Vorraussetzung, dass $x_{i+n-m} \geq 0$ ist $Ax=b, x \geq 0$ äquivalent zu:
+\begin{align}
+ b_i - \sum_{j=1}^{n-m} a_{i,j}x_j &\geq 0 & i = 1,\dotsc,m\\
+ x_j &\geq 0 & i = 1,\dotsc,n-m
+\end{align}
+Das ist der Durchschnitt von $n$ Halbräumen und ein Polytop im $\mathbb R^{n-m}$.
+\paragraph*{Umwandlung  Durchschnitt von Halbräumen in LP-Problem}
+Die $n$ Halbräume, die $P$ bestimmen seinen
+\begin{align*}
+h_{i,1} x_1 + \dotsc + h_{i,n-m} x_{n-m} &\leq g_i & i = 1,\dotsc,n
+\end{align*}
+Nach unserer Vorraussetzung sind die ersten $n-m$ Ungleichungen von der Form $x_i \geq 0, i = 1,\dotsc,n-m$.
+Verwende positive Schlupfvariablen $x_{n-m+1}, \dotsc , x_n$ und erhalte:
+\begin{align*}
+h_{i,1} x_1 + \dotsc + h_{i,n-m} x_{n-m} + x_i &= g_i & i = n-m+i,\dotsc,n
+\end{align*}
+Nun kann man dieses Problem als LP-Problem schreiben. Bilde dazu $A = ( H, I )$ (ein $m\times n$-Matrix) und erhalte das folgende System:
+\begin{align*}
+Ax &= b\\
+x &\geq 0\\
+b &= (g_{n-m+1},\dotsc,g_n)^T
+\end{align*}
+Der $x$-Vektor in den Halbraumdurchschnitten hatte nur die Dimension $n-m$, der $x$-Vektor des LP-Problems hatte die Dimension $n$. 
+Jeder Punkt $\hat{x} \in (x_1,...,x_{n-m})^T \in P$ kann transformiert werden zu einem Punkt aus $F$ mit $n$ Komponenten. Dazu muss man lediglich die Schlupfvariablen ausrechnen:
+\begin{align*}
+x_i &= g_i - \sum_{j=1}^{n-m} h_{i,j}x_j & \text{für $i=n-m+1,\dotsc,n$}
+\end{align*}
+Ungekehrt wird ein $x\in F$ durch weglassen der letzten $m$ Komponenten zu einem Punkt $\hat{x} \in P$.
+
+
