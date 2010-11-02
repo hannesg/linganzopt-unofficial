@@ -204,11 +204,11 @@ Es sei $P$ ein Polytop der Dimension $d$ im $\mathbb R^d$ und es sein $H \in \ma
 \item eine \Begriff{Ecke}, d.h. eine Seitenfläche der Dimension $0$.
 \item eine \Begriff{Kante}, d.h. eine Seitenfläche der Dimension $1$.
 \end{enumerate}
-Beispiel: ein Würfel im $\mathbb R^3$ ist gegeben durch $P = \{(x_1,x_2,x_3) | 0 \leq x_i1 \leq 1, i=1,2,3\}$. Dieser Würfel hat 6 Facetten, 8 Ecken und 12 Kanten.
+Beispiel: ein Würfel im $\mathbb R^3$ ist gegeben durch $P = \{(x_1,x_2,x_3) | 0 \leq x_i \leq 1, i=1,2,3\}$. Dieser Würfel hat 6 Facetten, 8 Ecken und 12 Kanten.
 \begin{align*}
 F_1 &= P \cap \{(x_1,x_2,x_3) | x_3 = 1 \} && \text{Facette} \\
-F_2 &= P \cap \{(x_1,x_2,x_3) | x_1 - x_3 = 1 \} && \text{Ecke} \\
-F_3 &= P \cap \{(x_1,x_2,x_3) | x_1 + x_2 + x_3 = 1 \} && \text{Kante}
+F_2 &= P \cap \{(x_1,x_2,x_3) | x_1 - x_3 = 1 \} && \text{Kante} \\
+F_3 &= P \cap \{(x_1,x_2,x_3) | x_1 + x_2 + x_3 = 1 \} && \text{Ecke}
 \end{align*}
 \subsection{Umwandlung}
 \begin{theorem}
@@ -224,12 +224,13 @@ F_3 &= P \cap \{(x_1,x_2,x_3) | x_1 + x_2 + x_3 = 1 \} && \text{Kante}
 conv(V) &= \Big \{ \sum_{i=1}^k \lambda_i v_i \Big | v_i \in V, \lambda_i \geq 0, \sum_{i=1}^k \lambda_i = 1 \Big \}
 \end{align*}
 \end{definition}
-Wir sind hauptsächlich interessiert an Polytopne, die im positiven Oktanten liegen. D.h. die ersten d-Halbräume sind definiert durch $x_j \geq 0 ( j = 1,\dotsc,d)$.
+Wir sind hauptsächlich interessiert an Polytopne, die im positiven Orthanten liegen.
+D.h. die ersten d-Halbräume sind definiert durch $x_j \geq 0 ( j = 1,\dotsc,d)$.
 Wegen \ref{theorem:polytop_huelle} kann ein Polytop $P$ auf verschiedene Weisen dargestellt werden:
 \begin{enumerate}[a)]
 \item als konvexe Hülle einer endlichen Punktemenge
-\item als Durchschnitt von endlich vielen Halbräumen ( der zusätzlich beschränkt ist )
-\item als zulässiger Bereich eines LP-Problems ( algebraische Darstellung )
+\item als Durchschnitt von endlich vielen Halbräumen (der zusätzlich beschränkt ist)
+\item als zulässiger Bereich eines LP-Problems (algebraische Darstellung)
 \end{enumerate}
 \paragraph*{Umwandlung LP-Problem in Durchschnitt von Halbräumen}
 Es sei $F = \{ x | Ax = b , x \geq 0 \}$ der zulässige Bereich eines LP-Problems. Wir setzen vorraus, dass die Bedingungen \ref{vorr:a},\ref{vorr:b} und \ref{vorr:c} erfüllt sind. Da $rang(A) = m$ gilt, können wir O.B.d.A. annehmen, dass die Gleichungen $Ax=b$ in der folgenden Form vorliegen:
