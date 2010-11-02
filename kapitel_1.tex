@@ -312,5 +312,52 @@ Also ist $\hat{x}$ eine Ecke von $P$.
 \begin{quotation}
 Die Menge der $\hat{x}$, für die $d^T\hat{x} = d^T\hat{y}$ gilt, bilden eine Hyperebene. Da der Schnittpunkt dieser Hypereben mit $P$ exakt einen Punkt hat ( nämlich $\hat{y}$ ) und $P$ komplett auf einer Seite dieser Hyperebene liegt ( nämlich $d^T\hat{x} \geq d^T\hat{y} \forall \hat{x} \in P$ ), ist $\hat{y}$ eine Ecke vom $P$. 
 \end{quotation}
-
 \end{proof}
+
+\section{Transformation von einer zulässigen Basislösung zu einer anderen}
+Es sei $x^0$ eine zulässige Basislösung eines LP-Problems mit gegebener $m\times n$-Matrix $A$ und zugeordneter Basis $B$ mit
+\begin{align*}
+B&=\{A_{B(i)} | i=1,\dotsc,m\}\\
+B(i) &\in \{1,\dotsc,n\} \text{geordnet}
+\end{align*}
+Die Basiskomponenten von $x^0$ seien mit $x_i^0$ bezeichnet. Dann folgt:
+\begin{align*}
+\sum_{i=1}^m x_i^0 A_{B(i)} = b , x_i^0 \geq 0
+\end{align*}
+Da die Spalten der Basis linear unabhängig sind, kann jede andere Spalte $A_j$, die nicht in der Basis ist, als nicht-triviale Kombination der Basisspalten dargestellt werden. Es gilt also:
+\begin{align*}
+\sum_{i=1}^m x_{i,j} A_{B(i)} &= A_j
+\end{align*}
+Beide Gleichungen ergeben mit $\theta > 0$:
+\begin{align*}
+\sum_{i=1}^m ( x_i^0 - \theta x_ij ) A_{B(i)} + \theta A_j &= b
+\end{align*}
+\begin{definition}
+Eine Basislösung heißt \Begriff{entartet}, wenn sie eine Nullkomponente enthält.
+\end{definition}
+Wenn $x^0$ nicht entartet ist, gilt $x_i^0 > 0$ für $i=1,\dotsc,m$. Mit 
+\begin{align}
+\theta_0 &= \min\limits_{i \text{mit} x_{i,j} > 0} \frac{x_i^0}{x_{i,j}} \\
+&= \frac{x_l^0}{x_{l,j}} \label{eq:min_austausch}
+\end{align}
+wird ( falls mindestens ein $x_{i,j} > 0$ ist ) mindestens eine Komponente $0$ gesetzt und die Zulässigkeit bleibt erhalten.
+
+\paragraph*{Spezialfall 1:} $x^0$ ist entartet und das zugehörige $x_{i,j} > 0$, dann folgt: $\theta_0 = 0$. In diesem Fall ändert sich die Lösung nicht, obwohl man die Spalte $B(i)$ durch die Spalte $A_j$ ersetzen kann.
+
+\paragraph*{Spezialfall 2:} Alle $x_{i,j} \leq 0$. In diesem Fall kann $\theta$ ohne den Verlust der Zulässigkeit beliebig groß gesetzt werden. D.h. $F$ ist unbeschränkt.
+
+\paragraph*{Spezialfall 3:} Wenn das Minimum in \eqref{eq:min_austausch} für mehrere Indices angenommen wird, so ist die neue Basislösung entartet.
+
+\begin{theorem}
+Gegeben sei eine zulässige Basislösung $x^0$ mit Basiskomponenten $x_i^0$, ($i=1,\dotsc,m$) und Basis $B=\{A_{B(i)} | i=1,\dotsc,m\}$ und ein Index $j$ sodass $A_j \notin B$. Dann ist die neue zulässige Lösung, die durch \eqref{eq:min_austausch} und durch
+\begin{align}
+x_i^1 &= \begin{cases}
+x_i^0 - \theta_0 x_{i,j} & i \neq l\\
+\theta_0 & i = l\end{cases}
+\end{align}
+bestimmt ist, eine zulässige Basislösung mit
+\begin{align*}
+B' &= (B \setminus \{A_{B(l)}\} ) \cup \{A_j\}
+\end{align*} vorrausgesetzt mindestens ein $x_{i,j} > 0$ existiert.
+\end{theorem}
+
