@@ -17,14 +17,14 @@ x_j &\gtrless 0 \; &\forall j \in N_2 \\
 \end{align*}
 \Begriff{allgemeines Lineares Programm} oder kurz allgemeines LP-Problem.\newline %
 Für $M_1 = N_2 = \emptyset$ ist es in \Begriffx{kanonische Form}{kanonischer Form}.\newline %
-Für $M_2 = N_2 = \emptyset$ ist es in \Begriff{standard Form}.
+Für $M_2 = N_2 = \emptyset$ ist es in \Begriff{Standardform}.
 \end{definition}
 
 \begin{theorem}
 Alle drei Formen des LP-Problems sind äquivalent ( d.h. können ineinander überführt werden ).
 \end{theorem}
 \begin{proof}
-Da LP-Probleme in kanonischer und standard Form automatisch auch allgemeine LP-Probleme sind, reicht es zu zeigen, dass jedes allgemeine LP-Problem in ein Problem in kanonischer und standard Form überführt werden kann.
+Da LP-Probleme in kanonischer und Standardform automatisch auch allgemeine LP-Probleme sind, reicht es zu zeigen, dass jedes allgemeine LP-Problem in ein Problem in kanonischer und Standardform überführt werden kann.
 \begin{enumerate}
 \item{\textit{allgemeine in kanonische Form}} \newline
 Die Umwandlung erfolgt durch Ersetzen von Bedingungen durch äquivalente Bedingungen. Dabei muss das Gleichungssystem (Matrix) um zusätzliche Gleichungen (Zeilen) und Variablen (Spalten) erweitert werden.
@@ -40,13 +40,13 @@ x_j & \text{für } x_j > 0 \\
 \end{cases}
 \end{align*}
 Folglich gilt $x_j = x_j^{+} - x_j^{-}$. Die Bedingung $x_j \gtrless 0$ ist folglich äquivalent zu $x_j^{+} \geq 0 \land x_j^{-} \geq 0$. Die Matrix erweiter sich also nochmals um $\lvert N_1 \rvert$ Spalten (da wir eine Variable mehr haben) und der Vektor $x$ um ebensoviele Komponenten. Das entstandene Problem ist in kanonischer Form.
-\item{\textit{allgemeine in standard Form}} \newline
+\item{\textit{allgemeine in Standardform}} \newline
 siehe Übung
 \end{enumerate}
 \end{proof}
 
 \section{Standard Form}
-Wir betrachten zunächst ein Problem in standard Form unter folgenden Vorraussetzungen:
+Wir betrachten zunächst ein Problem in Standardform unter folgenden Vorraussetzungen:
 \begin{enumerate}[(a)]
 	\item $rang(A) = m$\label{vorr:a}
 	\item die Menge der zulässigen Punkte $F = \{x| Ax=b, x\geq0\}$ ist nicht leer\label{vorr:b}
@@ -360,4 +360,82 @@ bestimmt ist, eine zulässige Basislösung mit
 B' &= (B \setminus \{A_{B(l)}\} ) \cup \{A_j\}
 \end{align*} vorrausgesetzt mindestens ein $x_{i,j} > 0$ existiert.
 \end{theorem}
+\begin{example}
+\begin{align*}
+3x_1 + 2x_2 + x_3 &= 1\\
+5x_1 + x_2 + x_3 + x_4 &= 3\\
+2x_1 + 5x_2 + x_3 + x_5 &= 4
+\end{align*}
+Dargestellt als Tableau:
+\begin{align*}
+\begin{matrix}
+ & x_1 & x_2 & x_3 & x_4 & x_5 \\
+1 & 3 & 2 & 1 & 0 & 0\\
+3 & 5 & 1 & 1 & 1 & 0\\
+4 & 2 & 5 & 1 & 0 & 1
+\end{matrix}
+\end{align*}
+Durch elementare Zeilenumformungen erhalten wir eine Einheitsmatrix und damit eine zulässige Basislösung.
+\begin{align*}
+\begin{matrix}
+ & x_1 & x_2 & x_3 & x_4 & x_5 \\
+1 & 3 & 2 & 1 & 0 & 0\\
+2 & 2 & -1 & 0 & 1 & 0\\
+3 & -1 & 3 & 0 & 0 & 1
+\end{matrix}
+\end{align*}
+\begin{quotation}
+Die Werte der nullten Spalte wird werden mit $x_{j,0}$ bezeichnet.
+\end{quotation}
+Nun hat man als Basis $B = \{A_3, A_4, A_5\}$ und die $0$-te Spalte gibt die Werte der Basisvariablen an. Die Nicht-Basisspalten in dem Tableau enthalten genau die Zahlen $x_{i,j}$, so zu Beispiel
+\begin{align*}
+A_1 &= 3A_3 + 2 A_4 - 1 A_5\\
+ &=\sum x_{i,j} A_{B(i)}
+\end{align*}
+Die notwendigen Berechnungen für den Basiswechsel können direkt in dem Tableau ausgeführt werden. Wenn wir zum Beispiel die Spalte $A_1$ in die Basis aufnehmen wollen, so bestimmen wir das $\theta_0$ mit \eqref{eq:min_austausch}:
+\begin{align*}
+\theta_0 &= \min \left ( \frac{1}{3}, \frac{2}{2} \right ) = \frac{1}{3} \\
+l&= 1
+\end{align*}
+Wir ersetzen die Spalte $B(l) = B(1) = 3$ mit Spalte $j=1$, indem wir in Spate $1$ einen Einheitsvektor $e_1$ erzeugen. Das neue Tableau sieht wie folgt aus:
+\begin{align*}
+\begin{matrix}
+ & x_1 & x_2 & x_3 & x_4 & x_5 \\
+\frac{1}{3} & 1 & \frac{2}{3} & \frac{1}{3} & 0 & 0\\
+\frac{4}{3} & 0 & -\frac{7}{3} & -\frac{2}{3} & 1 & 0\\
+\frac{4}{3} & 0 & \frac{11}{3} & \frac{1}{3} & 0 & 1
+\end{matrix}
+\end{align*}
+Die neue Basis ist nun $B' = \{ A_1, A_4, A_5 \}$. Wenn im allgemeinen $x_{i,j}$ und $x'_{i,j}$ die alten und neuen Tableauwerte sind, $B$ und $B'$ die alte und neue Basis und $x_{l,j}$ das Pivotelement ist, so sehen Updateformeln wie folgt aus:
+\begin{align*}
+x_{l,q}' &= \frac{x_{l,q}}{x_{l,j}} &\text{für } q=0,\dotsc,n \\
+x_{i,q}' &= x_{i,q} - x'_{l,q} x_{i,j} &\text{für } i=1,\dotsc,m; i \neq l ; q = 0,\dotsc,n \\
+B'(i) &= \begin{cases}
+B(i) & \text{für } i \neq l \\
+j & \text{für } i = l
+\end{cases}
+\end{align*}
+\begin{quotation}
+\textbf{Bem:} $B(i)$ besagt, wo der Vektor $e_i$ im Tableau steht.
+\end{quotation}
+\end{example}
 
+\subsection{Effekt der Kostenänderung}
+Es sein $x^0$ ein zulässige Basislösungund Kosten $z^0 = \sum_{i=1}^m x_i^0 c_{B(i)}$. Die Kostenänderung, für den Fall, dass die Spalte $A_j \notin B$ in die Basis gebracht wird, sieht wie folgt aus:
+\begin{align*}
+\sum_{i=1}^m (\underbrace{ x_i^0 - \theta x_ij }_{x_i^1}) A_{B(i)} + \underbrace{\theta}_{x_j^1} A_j &= b
+\end{align*}
+Für jede Einheit, die $x_j$ zusätzlich bekommt, muss ein Betrag von $x_{i,j}$ der Variablen $x_{B(i)}$ weggelassen für $i=1,\dotsc,m$. Die Kostenänderung,
+\begin{align}
+\overline{c_j} &= c_j - \sum_{i=1}^m x_{i,j} c_{B(i)} = c_j - z_j \label{eq:rel_kosten}
+\end{align}
+wird \Begriff{relative Kosten} der Spalte $j$ genannt. Dabei ist es günstig eine Spalte $j$ mit $\overline{c_j} < 0$ in die Basis aufzunehmen. Wenn alle $\overline{c} \geq 0$ sind, haben wir ein lokales Optimum gefunden. Dieses lokale Optimum ist sogar ein globales (wird später bewiesen).
+Für irgendein Tableau $X$ sei $B$ die $m \times m$-Matrix, die die Spalten aus $A$ für die Basis in enthalten und es sei $c_B \in \mathbb Z^m$ die Kosten dieser Basisvariablen. Da wir $X$ durch diagonalisierung der Basisspalten von $A$ bekommen, gilt, dass $X=B^{-1}A$ und für den Vektor $z=(z_1,\dotsc,z_n)$ gilt nach \eqref{eq:rel_kosten}:
+$z^T = c_B^TX = c_B^TB^{-1}A$.
+\begin{theorem}
+Bei gegebener zulässiger Basislösung $x^0$ ändern sich die Kosten, wenn die Variable $x_j$ durch einen Pivotschritt in die Basis aufgenommen wird, um den Betrag
+\begin{align*}
+\theta_0 \overline{c_j} = \theta_0 (c_j - z_j)
+\end{align*}
+\end{theorem}
+Wenn $\overline{c} = c - z \geq 0$, so ist $x^0$ optimal.
