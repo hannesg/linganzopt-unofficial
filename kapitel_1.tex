@@ -178,11 +178,26 @@ In diesem Fall ist äquivalent zu verstehen als Gleichheit der Lösungsmengen. E
 
 \section{Geometrie von Linearen Programmen}
 
-Ein \Begriff{linearer Teilraum} S des $\mathbb R^d$ ist eine Teilmenge von $\mathbb R^b$, die bezüglich der Vektoraddition und Skalarmultiplikation abgeschlossen ist. Ein \Begriff{affiner Teilraum} A des $\mathbb R^d$ ist ein linearer Teilraum $S$, verschoben um einen Vektor $u \in \mathbb R^d$: $A=\{u+x|x \in S\}$.
-Die Dimension eines linearen Teilraumes S ist gleich der maximale Zahl von linear unabhängigen Vektoren in S. Ebenso bei affinen Teilräumen. Die Dimension irgendeiner Menge X ist die kleinste Dimension eines affinen Teilraums, der X enthält. Äquivalent können wir einen affinen bzw. linearen Teilraum des $\mathbb R^d$ wie folgt darstellen: $A = \{ x \in \mathbb R^d | a_i^Tx = b_i , 1 \leq i \leq m \}$ bzw. $S = \{ x \in \mathbb R^d | a_i^Tx = 0 , 1 \leq i \leq m \}$.
+Ein \Begriff{linearer Teilraum} S des $\mathbb R^d$ ist eine Teilmenge von $\mathbb R^b$, die
+bezüglich der Vektoraddition und Skalarmultiplikation abgeschlossen ist.
+Ein \Begriff{affiner Teilraum} A des $\mathbb R^d$ ist ein linearer Teilraum $S$,
+verschoben um einen Vektor $u \in \mathbb R^d$: $A=\{u+x|x \in S\}$.
+
+Die Dimension eines linearen Teilraumes S ist gleich der maximale Zahl von linear unabhängigen
+Vektoren in S. Ebenso bei affinen Teilräumen. Die Dimension irgendeiner Menge X ist die kleinste
+Dimension eines affinen Teilraums, der X enthält. Äquivalent können wir einen affinen bzw. linearen
+Teilraum des $\mathbb R^d$ wie folgt darstellen:
+$A = \{ x \in \mathbb R^d | a_i^Tx = b_i , 1 \leq i \leq m \}$
+bzw. $S = \{ x \in \mathbb R^d | a_i^Tx = 0 , 1 \leq i \leq m \}$.
+
 Zum Beispiel hat eine Kante die Dimension 1 und ein Menge von k Punkten höchstens die Dimension k-1.
-Ein affiner Teilraum des $\mathbb R^d$ der Dimension $d-1$ wird als \Begriff{Hyperebene} bezeichnet. Alternativ ist dies eine Menge von Punkten $H=\{x \in \mathbb R^d |a^Tx=b\}$ mit $a \neq 0$. Eine Hyperebene definiert zwei \Begriff{abgeschlossene Halbräume} $H^{+} = \{x \in \mathbb R^d |a^Tx \geq b\}$ und $H^{-} = \{x \in \mathbb R^d |a^Tx \leq b\}$.
-Der Durchschnitt von endl. vielen Halbräumen wird bezeichnet als ein \Begriff{Polyeder}. Ein Polyeder heißt \Begriff{Polytop}, wenn es beschränkt ist.
+Ein affiner Teilraum des $\mathbb R^d$ der Dimension $d-1$ wird als \Begriff{Hyperebene} bezeichnet.
+Alternativ ist dies eine Menge von Punkten $H=\{x \in \mathbb R^d |a^Tx=b\}$ mit $a \neq 0$.
+Eine Hyperebene definiert zwei \Begriff{abgeschlossene Halbräume}
+$H^{+} = \{x \in \mathbb R^d |a^Tx \geq b\}$ und $H^{-} = \{x \in \mathbb R^d |a^Tx \leq b\}$.
+
+Der Durchschnitt von endl. vielen Halbräumen wird bezeichnet als ein \Begriff{Polyeder}.
+Ein Polyeder heißt \Begriff{Polytop}, wenn es beschränkt ist.
 
 Es sei $P$ ein Polytop der Dimension $d$ im $\mathbb R^d$ und es sein $H \in \mathbb R^d$ eine Hyperebene. So ist $F = P \cap H$ eine Seitenfläche von $P$, wenn $H$ mindestens einen Punkt gemeinsam mit $P$ hat und wenn $P$ in höchstens einem der beiden Halbräumen $H^{+}$ und $H^{-}$ liegt. Es gibt drei wichtige Fälle:
 \begin{enumerate}
