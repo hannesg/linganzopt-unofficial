@@ -454,3 +454,146 @@ Bei gegebener zulässiger Basislösung $x^0$ ändern sich die Kosten, wenn die V
 \end{align*}
 \end{theorem}
 Wenn $\overline{c} = c - z \geq 0$, so ist $x^0$ optimal.
+
+Die relativen Kosten $\overline{c_j}$ fpr ein Basisspalte $j$:
+\begin{align*}
+\overline{c_j} &= c_j - \sum_{i=1}^m \underbrace{x_{i,j}}_{\text{= 1 nur für $j=B(i)$}} c_{B(i)} \\
+&= c_{B(i)} - c_{B(i)} = 0
+\end{align*}
+Die anfängliche $0$. Zeile (gegeben durch den Kostenwerte $(0,c_1,\dotsc,c_m)$ ) können wir in den Komponenten der Basisspalte zu $0$ setzen in dem wir die $i$-te Zeil multiplizieren mit $-c_{B(i)}$ und zu $0$-ten Zeile addieren.
+Dies liefert in den Nicht-Basisspalten:
+\begin{align*}
+c_j - \sum_{i=1}^m c_{B(i)} x_{i,j} &= \overline{c_j}
+\end{align*}
+und in der $0$-ten Spalte:
+\begin{align*}
+0 - \sum_{i=1}^m c_{B(i)} x_{i,0} &= -z^0 &\text{(neg Kostenwert der Basislösung $x^0$)}
+\end{align*}
+Wenn wir die $0$-te Zeile analog zu den Update-Formeln mitmodifizieren:
+\begin{align*}
+x'_{0,q} &= x_{0,q} - x'_{l,q}x_{0,j} & q = 0,\dotsc,n
+\end{align*}
+so können wir die relativen Kosten und den negativen Kostenwert aus dem Tableau direkt ablesen.
+
+\section{Simplex-Algorithmus}
+\begin{verbatim}
+procedure simplex;
+begin
+	opt = false, unbeschränkt = false // ist eine der beiden variablen wahr, wird abgebrochen
+	while( (opt=false) and (unbeschränkt=false) ) do
+		if $\overline{c_j} = x_{0,j} \geq 0$ für alle j then
+			opt = true
+		else
+			wähle ein $j$ mit $\overline{c_j} = x_{0,j} < 0$
+			if( $x_{i,j} \leq 0$ für alle $i$ ) then
+				unbeschränkt = true	
+			else
+				bestimme $\theta_0 = \min\limits_{i:x_{i,j} > 0} \frac{x_{i,0}}{x_{i,j}} = \frac{x_{l,0}}{x_{l,j}}$
+				// das Pivotelement ist dann $x_{l,j}$
+				pivotisiere nach $x_{l,j}$
+			end
+		end
+	end
+end
+\end{verbatim}
+Bei diesem Verfahren wird vorrausgesetzt, dass wir eine zulässige Anfangslösung haben.
+\begin{example}
+\begin{align*}
+\begin{matrix}
+0 & 1 & 1 & 1 & 1 & 1 \\
+1 & 3 & 2 & 1 & 0 & 0 \\
+3 & 5 & 1 & 1 & 1 & 0 \\
+4 & 2 & 5 & 1 & 0 & 1
+\end{matrix}&\longrightarrow\begin{matrix}
+-6 & -3 & -3 & 0 & 0 & 0 \\
+1 & 3 & \underline{2} & 1 & 0 & 0 \\
+2 & 2 & -1 & 0 & 1 & 0 \\
+3 & -1 & 3 & 0 & 0 & 1
+\end{matrix}
+\end{align*}
+Wir haben nun eine zulässige Basislösung.
+Wähle nun $j = 2$. Dann ist
+\begin{align*}
+\theta_0 &= \min \left \{ \frac12, \frac33 \right \} = \frac{1}{2}\\
+l &= 1
+\end{align*}
+\begin{align*}
+\begin{matrix}
+-6 & -3 & -3 & 0 & 0 & 0 \\
+1 & 3 & \underline{2} & 1 & 0 & 0 \\
+2 & 2 & -1 & 0 & 1 & 0 \\
+3 & -1 & 3 & 0 & 0 & 1
+\end{matrix}&\longrightarrow\begin{matrix}
+\tfrac{-9}{2} & \tfrac{3}{2} & 0 & \tfrac{3}{2} & 0 & 0 \\
+\tfrac{1}{2} & \tfrac{3}{2} & 1 & \tfrac{1}{2} & 0 & 0 \\
+\tfrac{5}{2} & \tfrac{7}{2} & 0 & \tfrac{1}{2} & 1 & 0 \\
+\tfrac{3}{2} & \tfrac{-11}{2} & 0 & \tfrac{-3}{2} & 0 & 1
+\end{matrix}
+\end{align*}
+Die Lösung ist dann:
+\begin{align*}
+\overline{x} &= (0,\tfrac{1}{2},0,\tfrac{5}{2},\tfrac{3}{2})^T \\
+c^T\overline{x} &= \tfrac{-9}{2}
+\end{align*}
+\end{example}
+
+\begin{quote}
+\textbf{Bemerkung: } beachte, dass Zykel auftreten können ( vgl. Übung )
+\end{quote}
+Standardregel zur Vermeidung von Zykeln sorgt dafür, dass die $0$-te Zeile lexikographisch wächst.
+\begin{definition}
+Ein Vektor $v \in \mathbb R^n$ ist \Begriff{lexikographisch} positiv (negativ), wenn die erste von Null verschiedene Komponente positiv (negativ) ist.
+Wir schreiben $v >{}^L$ ($v <{}^L$).
+Ein Vektor $v \in \mathbb R^n$ ist lexikographisch größer (kleiner) als $w \in \mathbb R^n$ gdw $v-w >{}^L 0$ ($v-w <{}^L 0$).
+Es sei $V$ eine endliche Menge von Vektoren. Dann ist das lexikographische Minimum der lexikographisch kleinste Vektor aus $V$.
+Wir schreiben $\LexMin\limits_{v \in V}(v)$.
+\end{definition}
+Bisher haben wir im Simplex-Algorithmus folgendes gemacht:
+\begin{align*}
+\min\limits_{i:x_{i,j} > 0} \left \lbrack \frac{x_{i,0}}{x_{i,j}} \right \rbrack
+\end{align*}
+dies ersetzen wir durch:
+\begin{align*}
+\LexMin_{i:x_{i,j} > 0} \left \lbrack \frac{x_i}{x_{i,j}} \right \rbrack
+\end{align*}
+
+\begin{theorem}
+Es seien die Zeilen $x_1, \dotsc, x_m$ des Tableaus lexikographisch positiv. Dann sorgt die folgende Pivotregel dafür, dass die Zeilen lexikographisch positiv bleiben und dass die $0$te Zeile lexikographisch wächst und somit der Simplex-Algorithmus endlich ist.
+\begin{enumerate}
+\item Wähle eine beliebige Spalte mit $x_{0,j} < 0$
+\item Wähle die Zeile $l$ mit
+\begin{align*}
+\frac{x_l}{x_{l,j}} &= \LexMin_{i:x_{i,j} > 0} \left \lbrack \frac{x_i}{x_{i,j}} \right \rbrack
+\end{align*}
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+Zunächst zeigen wir, dass die Zeilen lexikographisch positiv bleiben.
+Die Pivotzeile $l$ wir zu
+\begin{align*}
+\hat{x}_l &= \frac{x_l}{x_{l,j}}
+\end{align*}
+Da $x_{l,j} > 0$ und $x_l >^L 0$ gilt $\hat{x}_l >^L 0$. Wenn $i \neq l$ und $x_{i,j} > 0$ ist, so gilt:
+\begin{align*}
+\hat{x}_i &= x_i - \frac{x_lx_{i,j}}{x_{l,j}} \\
+&= \underbrace{x_{i,j}}_{>0} \underbrace{ \left \lbrack \frac{x_i}{x_{i,j}} - \frac{x_l}{x_{l,j}} \right \rbrack }_{>^L 0} >^L 0
+\end{align*}
+Wenn $i \neq l$ und $x_{i,j} \leq 0$ ist, so gilt:
+\begin{align*}
+\hat{x}_i &= x_i - \frac{x_{i,j} x_l}{x_{l,j}} \\
+&= \underbrace{x_i}_{>0} + \frac{\overbrace{\lvert x_{i,j} \rvert}^{\geq 0} \overbrace{x_l}^{>^L 0}}{\underbrace{x_{l,j}}_{>0}} >^L 0
+\end{align*}
+Die $0$-te Zeile wird zu
+\begin{align*}
+\hat{x}_0 &= x_0 - \frac{x_{0,j} x_l}{x_{l,j}} \\
+&= \underbrace{x_0}_{>0} + \frac{\overbrace{\lvert x_{0,j} \rvert}^{\geq 0} \overbrace{x_l}^{>^L 0}}{\underbrace{x_{l,j}}_{>0}} >^L x_0
+\end{align*}
+also wächst die $0$-te Zeile lexikographisch.
+\end{proof}
+\begin{quote}
+\textbf{Bemerkung: }
+\begin{enumerate}[a)]
+\item die Auswahl der Pivotzeile bei gegebener Pivotspalte ist nun eindeutig.
+\item die Vorraussetzung $x_i >^L 0, (i = 1,\dotsc,m)$ ist durch die Einheitsmatrix in den Spalten $1,\dotsc,m$ und durch eine zulässige positive Anfangslösung erfüllbar.
+\end{enumerate}
+\end{quote}
