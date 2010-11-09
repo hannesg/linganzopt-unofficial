@@ -597,3 +597,116 @@ also wächst die $0$-te Zeile lexikographisch.
 \item die Vorraussetzung $x_i >^L 0, (i = 1,\dotsc,m)$ ist durch die Einheitsmatrix in den Spalten $1,\dotsc,m$ und durch eine zulässige positive Anfangslösung erfüllbar.
 \end{enumerate}
 \end{quote}
+
+\begin{lemma}
+Sei $\overline{c}^T = ( x_{0,1}, \dotsc , x_{0,n} )$ die relativen Kosten für ein Tableau $X_1$, das seine ($m \times m$ ) Einheitsmatrix enthält. Sei $x^0$ die zulässige Basislösung und $y$ eine beliebige Lösung von $Ay=b$ ( nicht notwendig positiv ). Dann gilt:
+\begin{align*}
+c^Ty &= c^Tx^0 + \overline{c}^Ty
+\end{align*}
+\end{lemma}
+\begin{proof}
+Wegen $\overline{c}^T = c^T - z^T = c^T - c^T_B B^{-1}A$ (siehe \eqref{eq:rel_kosten}), gilt:
+\begin{align*}
+\overline{c}^Ty &= c^Ty - c^T_B B^{-1}\underbrace{Ay}_{=b} \\
+ &= c^Ty - c^T_B B^{-1}b \\
+ &= c^Ty - c^T_B x_B^0 \\
+ &= c^Ty - c^T x^0
+\end{align*}
+\end{proof}
+\begin{theorem}\textbf{Variante von Blond}
+Wenn wir im Simplex-Algorithmus die folgende Pivotregel benutzt, so endet dieses Verfahren nach endlich vielen Pivotschritten:
+\begin{enumerate}
+\item \label{blond_1}wähle die Spalte $j$ mit $j = \min\{h | \overline{c}_h = x_{0,h} < 0 \}$.
+\item \label{blond_2}wähle die Zeile $l$ mit
+\begin{align*}
+B(l) &= \min \bigg \{ B(i) \bigg | x_{i,j} > 0 \text{ und } \frac{x_{i,0}}{x_{i,j}} \leq \frac{x_{k,0}}{x_{i,k}} \forall k, x_{k,j} > 0 \bigg \}
+\end{align*}
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+Wir finden also einen Widerspruch zu der Annahme, dass ein Zykel existiert.
+Damit ein Zykel existiert, muss es eine endliche Folge von Pivotschritten geben, mit der man von einer zulässigen Basislösung wieder zurückkommen kann.
+Während dessen bleiben die Kosten gleich und die $x_{l,0}$ assoziert mit jedem Pivotelement müssen $0$ sein.
+Ansonsten ist $\theta_0 > 0$ und der Kostenwert würde sich ändern.
+
+Wir lassen alle nicht beteiligten Zeilen und Spalten im Tableau weg und erhalten ein neues LP-Problem (mit $m$ Zeilen) , welches immernoch zykelt und wobei $x_{i,0} = 0$ für alle Zeilen $i = 1,\dotsc m$ gilt.
+
+Es sei $q$ der größte Index einer Variablen, die während des Zyklus in die Basis aufgenommen wird.
+Betrachte ein Tableau $T_1$, bevor die Variable $x_{q}$ in die Basis aufgenommen wird, und das Tableau $T_2$, wenn $x_q$ die Basis verlässt.
+Es sei $p$ die Spalte, die in $T_2$ gewählt wird.
+\begin{align*}
+T_1 &=\begin{matrix}
+& & & & & q \\
+-z & &  &  &  &  < 0 \\
+0 & &  &  &  &  \\
+\vdots &  &  &  &  & \vdots \\
+0 & &  &  &  &
+\end{matrix}
+\end{align*}
+\begin{align*}
+T_2 = &\begin{matrix}
+ & & & & p & & q \\
+ &-z &  &  & < 0 &  & 0 \\
+ & 0 &  &  & < 0 &  & 0 \\
+ & 0 &  & & < 0 &  & \vdots \\
+l & 0 &  &  & \hat{x}_{l,p}>0 &  & 1 \\
+ & 0 &  &  & < 0 &  & \vdots \\
+ & 0 &  &  & < 0 &  & 0
+\end{matrix}
+\end{align*}
+Wir wenden das obige Lemma an und wählne in $T_1$ als Basislösung $x^0$ und identisch $x_1$ mit $T_1$.
+Aus $T_2$ definieren wir ein Lösung $y$ durch
+\begin{align*}
+y_j &= \begin{cases}
+1 & j = p \\
+-\hat{x}_{i,p} & A_j = \hat{B} \text{ mit } \hat{x}_{i,j} = 1 \\
+0 & \text{sonst}
+\end{cases}
+\end{align*}
+Dann ist $y$ zwar kein Basislösung ( da es eine Nicht-Nullkomponente zu viel hat ), aber eine Lösung von $T_2y = \vec{0}$ udn damit von $Ay = b$.
+Also sind die Vorraussetzungen vom obigen Lemma erfüllt.
+Die Kosten von $y$ sind ( bezogen auf $T_2$ ):
+\begin{align*}
+c^Ty &= \underbrace{c^Tx^*}_{=z} + \overline{\hat{c}}^T y\\
+\overline{\hat{c}} &= (\dotsc, 0 \dotsc, \hat{x}_{0,p}, \dotsc, * , \dotsc) \begin{pmatrix}
+\vdots \\
+-\hat{x}_{i,p} \\
+\vdots \\
+1 \\
+\vdots \\
+0 \\
+\vdots
+\end{pmatrix} \\
+&= z + \hat{x}_{0,p}
+\end{align*}
+Aus dem Lemma folgt dann:
+\begin{align*}
+c^Ty = c^Tx^0 + \overline{c}^Ty &&\text{bezogen auf $T_1$}
+\end{align*}
+Da die Kosten immer gleich bleiben, gilt $c^Tx^0 = z$. Es folgt:
+\begin{align}
+\overline{c}^Ty = \hat{x}_{0,p} < 0 &&\text{weil $p$ gewählt wird}
+\label{eq:rel_kost_le_0}
+\end{align}
+Wegen der Wahl der Pivotspalte in $T_1$ gilt:
+\begin{align*}
+\overline{c}_j & \begin{cases}
+\geq 0 & j < q \\
+< 0 & j = q
+\end{cases}
+\end{align*}
+und wegen der Wahl der Pivotzeile in $T_2$ ( $q=B(l)$ ) ( wenn nicht würden wir eine andere Zeile auswählen ):
+\begin{align*}
+y_j &= \begin{cases}
+-\hat{x}_{l,p} < 0 & j=q \\
+0, 1, -\hat{x}_{i,p} \geq 0 & j<q
+\end{cases}
+\end{align*}
+Deshalb gilt:
+\begin{align}
+\overline{c}^T y &= \sum_{j < q} \underbrace{\overline{c}_j}_{\geq 0} \underbrace{y_j}_{\geq 0} + \overline{c}_q y_q \nonumber \\
+&\geq \underbrace{\overline{c}_q}_{<0} \underbrace{y_q}_{<0} > 0
+\end{align}
+Das ist ein Widerspruch zu \eqref{eq:rel_kost_le_0}
+\end{proof}
+
