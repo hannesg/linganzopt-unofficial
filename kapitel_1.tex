@@ -277,7 +277,7 @@ Es sei $P$ ein nicht-leeres Polytop, $F=\{x | Ax = b, x\geq 0\}$ der zugehörige
 \begin{enumerate}[a)]
 \item Der Punkt $\hat{x}$ ist eine Ecke von $P$.
 \item Wenn $\hat{x} = \lambda \hat{x}^1 + (1-\lambda)\hat{x}^2$ mit $\hat{x}^1,\hat{x}^2 \in P$ und $0 < \lambda < 1$, dann gillt $\hat{x} = \hat{x}^1 = \hat{x}^2$.
-\item Der zugeordnete Vektor $x \in \mathbb R^n$, definiert durch \ref{def:umwandlung_punkt_vektor} ist eine zulässige Basislösung von $F$.
+\item Der zugeordnete Vektor $x \in \mathbb R^n$, definiert durch \ref{def:umwandlung_punkt_vektor} ist eine zulässige Basislösung von $F$. \label{th:basisloesung_eq_ecke}
 \end{enumerate}
 \end{theorem}
 \begin{proof}
@@ -709,4 +709,261 @@ Deshalb gilt:
 \end{align}
 Das ist ein Widerspruch zu \eqref{eq:rel_kost_le_0}
 \end{proof}
+
+\subsection{Bestimmung der Startlösung}
+\emph{einfach:} $Ax \leq b$ wird zu $Ax + Iy = b$ \newline
+\emph{ansonsten:} füge neue Variablen $y_1,\dotsc, y_m$ in den linknen Teil des Tableaus und wende die 2-Phasen Methode an.
+% hier matrix mit links b dann I dann A
+Startlösung für Phase 1: $y_i = b_i, i=1,\dotsc,m, x_j =0 j=1,\dotsc,n$.\newline
+\textbf{In Phase 1 minimieren wir die Kostenfunktion $\xi = \sum_{i=1}^m y_i$.}\newline
+Es gibt 3 mögliche Ergebnisse des Simplex-Verfahrens:
+\begin{enumerate}[Fall 1)]
+\item $\xi =0$ und alle $y_i$ sind außerhalb des Bereichs.
+In diesem Fall haben wir eine zulässige Basislösung für das Originalproblem.
+\item $\xi > 0$
+In diesem Fall gibt es keine zulässige Lösung des Problems.
+\item $\xi = 0$, aber einige der zusätzlichen Variablen sind noch in der Basis mit Wert $y_k = 0$.
+Angnommen die $l$-te Zeile ist der Variablen $y_k$ zugeordnet. D.h. $k = B(l)$ und $x_{l,0} = 0$.
+Dann können wir mit einem Element $x_{l,j} \neq 0$ (nicht notwendig positiv) der Spalte $j$, die der Variablen
+$x_{j-m}$ zugeordnet ist, pivotisieren.
+Da $\theta_0 = 0$ ist, gibt es keinen Verlust der Zulässigkeit und keine Änderung der Kosten $\xi$.
+Im Allgemeinen ist dies kein Pivotisieren, da das Pivotelement hier einen negativen Wert haben kann oder
+die Kosten größer $0$ sein dürfen, sondern ein Entfernen der zusätzlichen Variablen.\newline
+\textbf{Sonderfall:} wir haben eine Zeile mit Nullen in allen Spalten, die den Originalvariablen zugeordnet sind.
+Das bedeutet, dass $A$ nicht vollen Rang hatte. Folglich kann man diese Zeile einfach löschen und in Phase 2 mit
+niedrigerer Dimension weitermachen.
+\end{enumerate}
+In Phase 2 streicht man die neuen Variablen $y_i$ und löst das Problem mit der Originalzielfunktion $c^Tx$.
+\newline
+\textbf{Phase 2}\newline
+\begin{verbatim}
+procedure two-phase;
+begin
+	# Phase 1
+	unzulässig = falsch;
+	redundant = falsch;
+	füge neue Variablen $\y_1m, \dotsc, y_m$ ein;
+	rufe Simplex mit Kosten $\xi = \sum_{i=1}^m y_i auf
+	# Phase 2
+	if $\xi_{opt} > 0$ then unzulässig = true
+	else begin
+		entferne zusätzliche Variablen aus der Basis; (wenn $x_l \neq 0$)
+		solange es eine Variable $x_i$ in der Basis gitb, die nicht entfern werden kann
+			redundant = wahr
+			lasse die zugeordnete Nullzeile weg
+		end
+		streiche die $y_j$ Variablen aus dem Tableau
+		rufe Simplex mit Originalkosten $c^Tx$ auf.
+	end
+end	
+\end{verbatim}
+
+\begin{example}
+\begin{align*}
+\min(-x_1 + 3x_2 ) \\
+x_1 - x_2 + x_3 &= 4 \\
+2x_1 + x_2 + x_4 &= 14 \\
+-x_1 + x_2 + x_5 &= 8 \\
+x_1 + 2x_2 -x_6 = 4 \\
+x_1 + 2x_2 = 10
+\end{align*}
+\begin{align*}
+\begin{matrix}
+	& x_1 & x_2 & x_3 & x_4 & x_5 & x_6 & y_1 & y_2\\
+-14	& -2 & -4 & 0 & 0 & 0 & 1 & 1 0 & 1 0 \\
+4 	& 1 & -1 & 1 \\
+14	& 2 & 1 & & 1 \\
+8	& -1 & 1 & & & 1\\
+4	& 1 & \underline{2} & & & &-1 & 1\\
+10	& 1 & 2 & & & & & &1
+\end{matrix}\\
+\begin{matrix}
+-6	& x_1 & x_2 & x_3 & x_4 & x_5 & x_6 & y_1 & y_2\\
+-6	& 0 & 0 & 0 & 0 & 0 & 1 & -1 & 2 \\
+6 	& \tfrac{3}{2} & 0 & 1 & & & -\tfrac{1}{2} & \tfrac{1}{2}\\
+12	& \tfrac{3}{2} & 0 & & 1 & & \tfrac{1}{2} & -\tfrac{1}{2}\\
+6	& -\tfrac{3}{2} & 0 & & & 1 & \tfrac{1}{2} & -\tfrac{1}{2}\\
+2	& \tfrac{1}{2} & 1 & & & & -\tfrac{1}{2} & \tfrac{1}{2}\\
+6	& 0 & 0 & & & & \underline{1} & -1 &1
+\end{matrix}\\
+\begin{matrix}
+-15	& \tfrac{-5}{2} & 0 & 0 & 0 & 0 & 0 & 0 & \tfrac{-3}{2}\\
+0	& 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 \\
+9 	& \tfrac{3}{2} & 0 & 1 & & & & & \tfrac{1}{2}\\
+9	& \tfrac{3}{2} & 0 & & 1 & & & & -\tfrac{1}{2}\\
+3	& -\tfrac{3}{2} & 0 & & & 1 & & & -\tfrac{1}{2}\\
+5	& \tfrac{1}{2} & 1 & & & & & & \tfrac{1}{2}\\
+6	& 0 & 0 & & & & 1  & -1 &1
+\end{matrix}\\
+\begin{matrix}
+0	& 0 & 0 & \tfrac{5}{3} & 0 & 0 & 0\\
+6 	& 1 & 0 & \tfrac{2}{3} & & & \\
+0	& 0 & 0 & -1 & 1 & & \\
+12	& 0 & 0 & 1 & & 1 & \\
+2	& 0 & 1 & \tfrac{-1}{3} & & & \\
+6	& 0 & 0 & & & & 1
+\end{matrix}\\
+\overline{x} &= (6,2,0,0,12,6) \\
+z_{opt} &= 0
+\end{align*}
+\end{example}
+
+\subsection{Geometrische Interpretation des Simplex Verfahrens}
+\begin{definition}
+Als die \Begriff{affine Hülle} bezeichnet man die Menge aller Punkte die sich darstellen lassen mit 
+\begin{align*}
+\aff A &= \{ x | \sum_{a \in A} \lambda(a) a = x, \sum_{a \in A} \lambda(a) = 1\}
+\end{align*}
+Der Unterschied zur konvexen Hülle besteht darin, dass $\lambda$ auch negativ und größer als $1$ sein darf.
+\end{definition}
+\begin{definition} \Begriff{benachbart}:
+\begin{enumerate}[(a)]
+\item Zwei Ecken $\hat{x}$ und $\hat{y}$ eines Polytops $P$ heißen benachbart, wenn $\conv(\{\hat{x},\hat{y})$ eine Kannte von $P$ ist.
+\item Zwei verschiedene zulässige Basislösungen $x,y$ eines LP heißen benachbart, wenn es Basen $B_x, B_y$ gibt mit
+\begin{align*}
+B_y &= ( B_x - \{ A_j \} ) \cup \{ A_k \} ( j \neq k ) && \text{und} \\
+x &= B^{-1}_x b \\
+y &= B^{-1}_y b
+\end{align*}
+\begin{quote}
+\textbf{Bemerkung:} Zwei zulässige Basislösungen $x,y$ eines LP mit $c^Tx < c^Ty$ sind genau dann benachbart, wenn es einen zulässigen Simplexschritt gibt, durch den $x$ aus $y$ hevorgeht.
+\end{quote}
+\end{enumerate}
+\end{definition}
+\begin{theorem}
+Es sei $P$ ein Polytop, $F = \{ x | Ax=b, x\geq 0 \}$ die zugehörige Menge der zulässigen Punkte des LP,
+$\hat{x} = (x_1, \dotsc, x_{n-m})^T$ und $\hat{y} = (y_1, \dotsc, y_{n-m})^T$ verschiedene Ecken von $P$ und $x,y$ die zugeordnent Basislösungen. Dann sind folgende Aussagen äquivalent:
+\begin{enumerate}[(a)]
+\item $\hat{x},\hat{y}$ sind benachbart.
+\item Für $\hat{z} \in \conv(\{\hat{x},\hat{y}\})$ mit $\hat{z} = \lambda \hat{z}^1 + (1-\lambda) \hat{z}^2$, $0 < \lambda < 1$ und $\hat{z}^1, \hat{z}^2 \in P$ dann sind $\hat{z}^1, \hat{z}^2 \in \conv(\{\hat{x},\hat{y}\})$. \label{th:eq_b}
+\item $x$ und $y$ sind benachbart.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+\begin{description}
+\item[(a) $\Rightarrow$ (b):] siehe Übung
+\item[(b) $\Rightarrow$ (c):] Wir nehmen an, dass die zulässigen Basislösugnen $x, y $ aus $F$ nicht benachbart sind, aber zu Punkten $\hat{x},\hat{y}$ in $P$ gehören, die die Eigenschaft (\ref{th:eq_b}) besitzen.
+Es seien $M_x, M_y$ die Menge der Spalten, di e zu den positiven Komponenten von $x$ und $y$ gehören.
+Gäbe es keine zulässige Basislösung $w$ mit der Eigenschaft $w \neq x,y$ und $M_w \subset M_x \cup M_y$, so wäre
+$y$ das eindeutige Optimums des LP's $Ax = b, x \geq 0$ mit dem Kostenvektor
+\begin{align*}
+c_j &= \begin{cases}
+0 & A_j \in M_y\\
+1 & A_j \in M_x \setminus M_y\\
+G & \text{sonst}
+\end{cases}
+\end{align*}
+wobei $G$ hinreichend groß gewählt ist.
+Jede von $x,y$ verschiedene Basislösung $w$ (mit $M_w \nsubseteq M_x \cup M_y$) hat höhere Kosten als $x$.
+Der Simplex-Algorithmus könnte also ausgehend von $x$ niemals das Optimum erreichen.
+Diese Widerspruch zeigt, dass es eine zulässige Basislösung $w$ mit $w\neq x,y$ und $M_w \subset M_x \cup M_y$ geben muss.\newline
+$\hat{w}$ liegt nicht in $\conv\{\hat{x},\hat{y}\}$, da $\hat{x},\hat{y},\hat{w}$ verschiedene Ecken von $P$ sind und auch nicht in $\aff\{\hat{x},\hat{y}\}$.
+Sei $z = \frac{1}{2}(x+y)$ und $d = z-w$. $d$ hat außer für Spalten aus $M_x \cup M_y$ nur verschwindende Komponenten ($= 0$). Da gilt
+\begin{align*}
+Ax = b, x \geq 0 \and Ay = b, y \geq 0 &\Rightarrow Az=b, z \geq 0 \\
+Aw = b, w \geq 0 &\Rightarrow Ad = 0
+\end{align*}
+Es gibt also ein $\theta > 0$ mit $u_1 = z + \theta d, u_2 = z - \theta d$ zulässige Lösungen.
+Folglich ist $z = \frac{1}{2}( u_1 + u_2 )$ mit $\hat{u}_1, \hat{u}_2 \notin \conv\{\hat{x},\hat{y}\}$ im Widerspruch zu (\ref{th:eq_b}).
+\item[(c) $\Rightarrow$ (a):] Es seien $B_x, B_y$ die Basen zu $x,y$ mit $B_y = B_x \cup \{A_j\} \setminus \{A_k\}$ und Spalten $A_j, A_k, j \neq k$.
+Sei
+\begin{align*}
+c_i &= \begin{cases}
+0 & \text{für } A_i \in B_x \cup B_y\\
+1 & \text{sonst}
+\end{cases}
+\end{align*} 
+Alle zulässigen Lösungen, die Konvexkombinationen von $x$ und $y$ sind, sind optimale Lösungen von $\min c^Tw, Aw=b, w\geq 0$. Umgekehrt sind dies auch die einzigen optimalen Lösungen.
+Wenn nämlich $z$ optimal ist, so ist $z$ eine Konvexkombination von optimalen Basislösungen und insbesondere hier von Basislösungen mit Basen, die Teilmenge von $B_x \cup B_y$ sind.
+Beachte, dass $x$ und $y$ die einzigen solchen Basislösungen sind!
+Folglich ist $z$ Konvexkombination von $x$ und $y$.
+Es folgt, dass nur Konvexkombinationen $w$ von $x$ und $y$ die Bedingungen $Aw =b , w\geq 0, c^Tw \leq c^Tx = 0$ erfüllen.
+Es folgt, dass in $P$ nur die Punkte $\hat{w} \in \conv\{\hat{x},\hat{y}\}$ die Bedingung $d^T\hat{w} \leq d^T\hat{x}$ erfüllen, wobei $d$ wie im Beweis 1.10. \ref{th:basisloesung_eq_ecke} ( Basislösungen $\Leftrightarrow$ Ecken ) definiert ist.
+Durch $d$ wird eine Hyperebene an $P$ definiert, die genau $\conv\{\hat{x},\hat{y}\}$ ausschneidet.
+Also ist $\conv\{\hat{x},\hat{y}\}$ eine Kante und $\hat{x},\hat{y}$ sind benachbart.
+\end{description}
+\end{proof}
+
+\section{Duale LPs}
+
+Um hierrauf das Optimalitätskriterium von Satz 4.5 anwenden zu können, müssen wir es in Satadardform schreiben. Durch Einfühtrung von Überschussvariablen $y_i \in Z \setminus M $ und von positiven Variablen $x^+_j, x^-_j$ für $j \in S \setminus N ( x_j = x^+_j - x^-_j)$ erhalten wir das folgende äquivalente LP-Problem:
+\begin{align*}
+\min \hat{c}^T\hat{x} & \hat{A}\hat{x} = \hat{b}, \hat{x} \geq 0 \\
+\hat{c} &= ( c_1, \dotsc, c_{n'}, c_{n'+1}, -c_{n'+1} , \dotsc , c_n, -c_n, 0, \dotsc ,0) \\
+\hat{x} &= (x_1, \dotsc , x_{n'}, x^+_{n'+1}, x^-_{n'+1}, \dotsc , x^+_n, x^-_n, y_{m'+1}, \dotsc, y_n )\\
+\hat{A} &= \left ( \begin{matrix}
+| &  & | & | & | & & | & |  \\
+A_1 & \hdots & A_{n'} & A_{n'+1} & -A_{n'+1} & \hdots & A_n & -A_n \\
+| &  & | & | & | & & | & | 
+\end{matrix} \binom{0}{-I} \right )
+\end{align*}
+Wegen des Optimalitätskriteriums $\overline{c} \geq 0$ und wegen dem Simplex-Algorithmus gilt:
+wenn $\hat{x}_0$ ein optimale Lösung des obigen LPs ist, so gibt es eine Basis für das LP mit
+\begin{align*}
+\hat{c}^T - (\underbrace{\hat{c}_B^T B^{-1}}_{\Pi^T} )\hat{A} &\geq 0
+\end{align*}
+Daher ist $\Pi^T$ eine zulässige Lösung der Ungleichungen $\Pi^T \hat{A} \leq \hat{c}^T$ mit $\Pi^T \in \mathbb R^m$.
+Diese Ungleichungen können wegen der Darstellung des LP-Problem in drei Gruppen aufgeteilt werden:
+\begin{enumerate}[(a)]
+\item \emph{$\Pi^TA_j \leq c_j$ für alle $j \in N$}
+\item \emph{$\Pi^TA_j \leq c_j$ und $\Pi^T(-A_j) \leq (-c_j)$ für alle $j \in S\setminus N$}, also $\Pi^TA_j = c_j$ für alle $j\in S\setminus N$.
+\item \emph{$-\Pi_i \leq 0$ für alle $i \in Z\setminus M$}
+\end{enumerate}
+Diese Bedingungen definieren dei Ungleichungen eines neuen LP-Problems, des sogenannten Dualen LP-Problems.
+Das erste LP-Problem wird primales LP-Problem genannt.
+Wenn wir die Kostenfunktion $\max \Pi^T b$ wählen so ist der Vektor $\Pi^T = \hat{c}^T_B B^{-1}$ nicht nur zulässig
+sondern, wie wir zeigen werden, auch optimal.
+
+Es seien $x$ und $\Pi$ zulässige Lösungen des primalen bzw. dualen LP-Problems. So gilt:
+\begin{align*}
+c^Tx &\geq \Pi^T A x && \text{da $c^T \geq \Pi^TA$}\\
+&\geq \Pi^T b && \text{da $Ax \geq b$} \tag{Primal dom. Dual}\label{eq:ctx_geq_pitb}
+\end{align*}
+Die Kosten einer primalen Lösung dominieren also immer die Kosten einer dualen Lösung.
+Wenn das primale Problem eine zulässige Lösung besitzt, so kann das duale Problem nicht kostenmäßig unbeschränkt sein.
+Es sei also $\hat{x}^0$ eine zulässige optimale Lösung des primalen Problems.
+Dann hat das duale Problem die zulässige Lösung $\Pi^0$ mit ${\Pi^0}^T = \hat{c}^T_B B^{-1}$ und den Kosten von 
+${\Pi^0}^T b = \hat{c}^T_B B^{-1} b = \hat{c}^T \hat{x}^0$.
+Die Kosten der dualen Lösung sind also gleich den Kosten der primalen Lösung. Wegen $c^Tx \geq \Pi^T b$ ist daher $\Pi^0$ optimal.
+
+\begin{theorem}
+Ein Paar $x,\Pi$ ist ein zulässiges optimales Paar von Lösungen für ein primale-duales Paar von LP-Problemen genau dann wenn:
+\begin{align*}
+u_i = \Pi_i ( a_i^T x - b_i ) = 0 \forall 1 \leq i \leq m \\
+v_j = ( c_j - \Pi^T A_j ) x_j = 0 \forall 1 \leq j \leq n
+\end{align*}
+\end{theorem}
+\begin{proof}
+Aus Definition 81 folgst, dass $n \geq 0 $ alle $i$  un d $v_j \geq 0$ für alle $j$ . Definiere $u = \sum_{i=1}^m u_i \geq 0$ und $v = \sum_{j=1}^n v_j \geq 0$.
+Dann gilt $u=0$ und $v=0$ wenn alle $m$ und $n$ die Bedingungen erfüllen.
+\begin{align*}
+u + v &= c^T x - \Pi^T b
+\end{align*}
+da die gemischten Terme sich gegenseitig wegheben. Also sind $m$ und $n$ Bedingungen erfüllt, genau dann wenn $u +v = 0$ bzw. $c^Tx = \Pi^T b$ ist.
+Dies ist jedoch notwending und hinreichend, wegen \eqref{eq:ctx_geq_pitb}, dafür dass $x$ und $\Pi$ optimal sind.
+\end{proof}
+
+\section{Laufzeit des Simplex}
+
+\begin{proof}
+Zu Klee-Minty:
+Per Induktion nach $d$. Für $d=1$ gibt es zwei Basislösungen:
+\begin{align*}
+(x_1,r_1, s_1) &\in \{ (0,\epsilon, 1-\epsilon) , (1,1-\epsilon,0) \}
+\end{align*}
+mit unterschiedlicher Komponente $x_1$ und sie sind adjazent.
+\emph{Vorraussetzung:} Die Aussage gilt für $d$-dimensionale Hyperwürfel und sei $S_1 ,\dotsc, S_{2^d}$ die entsprechende Ordnung der Teilmengen von $\{1,\dotsc, d\}$.
+Diese Teilmengen sind auch Teilmengen von $\{1, \dotsc, d+1\}$ und $x^{S_j}_{d+1} = \epsilon x^{S_j}_{d}$ (weil $r_{d+1} = 0$ ).
+Nach der Induktionsvorraussetzung gilt $x^{S_1}_d < \dotsc , x^{S_{2^d}}_{d}$, also $x^{S_1}_{d+1} < \dotsc , x^{S_{2^d}}_{d+1}$
+Nun betrachte die übrigen Teilmengen von $\{1,\dotsc, d+1\}: S'_j = S_j \cup \{d+1\}$ für $j=1,\dotsc,2^d$.
+Nach Lemma b gilt wegen $d+1 \in S'_j$ und $d+1 \notin S_{2^d}$.
+$x^{S'_j}_{d+1} > x^{S_{2^d}}_{d+1}$ und $x^{S'_j}_{d+1} = 1 - x^{S_j}_{d+1}$ also insgesamt: 
+\begin{align*}
+x^{S_1}_{d+1} < \dotsc < x^{S_{2^d}}_{d+1} < x^{S'_{2^d}}_{d+1} < \dotsc < x^{S'_1}_{d+1}
+\end{align*}
+Nach der Induktionsvorraussetzung sind $x^{S_j}$ und $x^{S_{j+1}}$ benachbart und analog $x^{S'_j}$ und $x^{S'_{j+1}}$.
+Zusätzlich sind auch $x^{S_{2^d}}$ und $x^{S'_{2^d}}$ benachbart (ersetze in der Basis zu $S_{2^d}$ die Spalte zu $s_{d+1}$ durch die Spalte zu $r_{d+1}$ ).
+\end{proof}
+
+
 
