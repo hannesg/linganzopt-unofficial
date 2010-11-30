@@ -700,7 +700,7 @@ und wegen der Wahl der Pivotzeile in $T_2$ ( $q=B(l)$ ) ( wenn nicht würden wir
 y_j &= \begin{cases}
 -\hat{x}_{l,p} < 0 & j=q \\
 0, 1, -\hat{x}_{i,p} \geq 0 & j<q
-\end{cases}
+\end{cases}\Vert
 \end{align*}
 Deshalb gilt:
 \begin{align}
@@ -965,5 +965,132 @@ Nach der Induktionsvorraussetzung sind $x^{S_j}$ und $x^{S_{j+1}}$ benachbart un
 Zusätzlich sind auch $x^{S_{2^d}}$ und $x^{S'_{2^d}}$ benachbart (ersetze in der Basis zu $S_{2^d}$ die Spalte zu $s_{d+1}$ durch die Spalte zu $r_{d+1}$ ).
 \end{proof}
 
+\section{Elipsoid-Algorithmus}
 
+Wir betrachen nun LI ( linear equalities ): zu einer gegebnen Matrix $A \in \mathbb Z^(m\times n)$ und $b \in \mathbb Z^(m)$ entscheide, ob es einen zulässigen Vektor $x$ so dass $Ax \leq b$ gilt.
+\begin{theorem}
+Für LI existiert genau dann ein Polynomialzeitalgorithmus, wenn auch einer für LP exisiert.
+\end{theorem}
+\begin{proof}
+\begin{description}
+\item\textbf{LI zu LP:} Trivial. Ergänze ein Kostenfunktion ( z.B. $c = \vec{0}$ ).
+\item\textbf{LP zu LI:} Gegeben sei Algorithmus $\mathcal A$ der LI in Polynomialzeit löst. Wir beschreiben einen Polynomialzeitalgorithmus für LPs, der $\mathcal A$ verwendet:
+\begin{enumerate}
+	\item Teste, ob $LP$ zulässig  ist ( mit $Ax \geq b, Ax \leq b, x \geq 0$ ). Wenn $\mathcal A$ antwortet "NEIN" dann ist das LP unzulässig.
+	\item Teste die Zulässigkeit der Ungleichungen $Ax \geq b, Ax\leq b, x \geq 0, c^Tx \leq -2^{2L} -1$. Für Basislösungen gilt:
+\begin{align*}
+ \lvert c^Tx\rvert &= \left \lvert \sum c_j x_j \right \rvert \\
+	&\leq \underbrace{\max_j x_j}_{\leq 2^L} \cdot \underbrace{\sum \lvert c_j \rvert}_{\leq 2^L} \leq 2^{2L}
+\end{align*}
+		Wenn $\mathcal A$ antwortet "JA", dann existieren zulässige Lösungen deren Kosten kleiner sind, als die Kosten aller Basislösungen. Folglich ist $\{ c^Tx | x \text{ zulässig} \}$ nicht nach unten beschränkt.
+	\item Zunächst bestimme $K \in \mathbb Z$ mit $-2^{4L} \leq K \leq 2^{4L}$ und $K 2^{-2L} < c^T\hat{x} \leq (K+1) 2^{-2L}$.
+Dieses $K$ können wir durch binäre Suche mit höchstens $4L +2$ aufrufen von $\mathcal A$ bestimmen:
+\begin{align*}
+	Ax \geq b, Ax \leq b, x\geq 0, 2^{2L}c^Tx \leq a \text{ für gewissen Zahlen }a
+\end{align*}
+	\item Bestimme die Basis von $\hat{x}$. Teste ob die folgenden Ungleichungen ( für $k = 1,\dotsc,m$ ) erfüllt sind:
+\begin{align*}
+Ax \leq b, Ax \geq b , K \leq 2^{2L} c^Tx \leq K+1, x \geq 0, x_k \leq 0 \\
+x_j \leq 0 \forall j \in S(k)
+\end{align*}
+Wobei die Menge $S(k)$ die Mengen der Indices $< k$ ist, für die die Anwort "JA" war.
+\end{enumerate}
+\end{description}
+\end{proof}
+\begin{quote}
+\textbf{Bemerkung:}
+\begin{enumerate}[(a)]
+ \item Jede Menge von $m$ Spalten, dier nicht in $S(n+1)$ sind, können für eine Basis von $\hat{x}$ gewählt werden.
+ \item Es gibt mindestens $m$ Spalten, die nicht in $S(n+1)$ sind, falls keine Entartung auftritt.
+ \item Nach Bestimmung der Basis berechne $\hat{x} = B^{-1}b$.
+\end{enumerate}
+\textbf{Frage:} Was passiert bei Entartungen?
+\end{quote}
+\begin{lemma}
+Das System der linearen Ungleichungen
+\begin{align*}
+a_i^Tx &\leq b_i \label{eq:li}\tag{LI}
+\end{align*}
+hat genau dann eine Lösugen wenn das System der linear strikten Ungleichungen
+\begin{align*}
+a_i^Tx &< b_i + \epsilon  \label{eq:lsi}\tag{LSI}
+\end{align*}
+mit $\epsilon = 2^{-2L}$.
+\end{lemma}
+\begin{proof}
+\textbf{LI zu LSI:} Trivial, da jede Lösung des LI auch eine Lösung des LSI ist.\newline
+\textbf{LSI zu LI:}
+Sei $x_0$ Lösung von \eqref{eq:lsi}. Sei $I = \{ a_i :  b_i \leq a_i^Tx_0 < b_i + \epsilon \}$.\newline
+\emph{Annahme: $\exists a_j$ unabhängig zu allen $a_i$ in $I$.}\newline
+Das Gleichungssystem $a_i^T z = 0 \forall a_i \in I, a_j^Tz = 1$ hat eine Lösung $z_0$. Setze $x_i = x_0 + \lambda z_0$ ( mit $\lambda >0$ geeignet gewählt ).
+\begin{align*}
+\forall i \in I: &a_i^T x_i = a_i^T( x_0 + \lambda z_0) = a_i^Tx_0\\
+&a_j^Tx_i = a_j^T(x_0 + \lambda z_0) = a_j^Tx_0 + \lambda \\
+\forall k \notin I: & a_k^Tx_k = a_k^T(x_0 + \lambda z_0) = a_k^Tx_0 + \lambda a_k^T z_0 < b_k + \lambda a_k^T z_0
+\end{align*}
+Durch geeignete Wahl von $\lambda$ können wir die Menge $I$ vergrößern ( mindestens eine Zeile ). Nach $m$ Schritten muss solch ein Verfahren aber abbrechen und wir erhalten:
+\begin{align*}
+\forall j : & a_j 0 \sum_{a_i \in I'} \beta_{j,i} a_i
+\end{align*}
+für geeignete Zahlen $\beta_{j,i}$ und $I' \subseteq I$, da $I'$ linear unabhängige Menge von Zeilenvektoren.
+Nach der Cramerschen Regel folgt: $\beta_{j,i} = \frac{D_{j.i}}{\lvert D \rvert}$ mit $D_{j,i} \in \mathbb Z$ und $D_{j,i}, D \leq 2^{L}$
+Betrachte Lösung $\hat{x}$ des Gleichungssystems $a_i^Tx=b_i$ mit $a_i \in I'$ ( es exisitert eine Lösung, da $I'$ linear unabhängige Zeilen enthält ).
+\newline\newline
+Zeige: $\hat{x}$ ist Lösung von \eqref{eq:li}.
+\begin{align*}
+\forall j: \lvert D \rvert ( a_j^T \hat{x} - b_j ) &= \sum_{a_i \in I'} \lvert D \rvert \frac{D_{j,i}}{\lvert D \rvert} a_i^T\hat{x} - \lvert D \rvert b_j \\
+&= \sum_{a_i \in I'} D_{j,i} b_i - \lvert D \rvert b_j \\
+&= \sum_{a_i \in I'} D_{j,i} b_i - \lvert D \rvert b_j + \underbrace{\lvert D \rvert a_j^Tx_0}_{=\sum_{a_i\in I'} D_{j,i}a_i^Tx_0 } - \lvert D \rvert a_j^Tx_0 \\
+&= -\sum_{a_i \in I'} D_{j,i} (a_i^T x_0 - b_i ) + \lvert D \rvert \underbrace{( a_j^Tx_0 - b_j)}_{< \epsilon} \\
+&< \epsilon \sum_{a_i \in I'} \lvert D_{j,i} + \epsilon \lvert D \rvert \leq \frac{1}{2^{2L}} \underbrace{(m+1)}_{<2^L} 2^L < 1
+\end{align*}
+Es folgt:
+\begin{align*}
+\hat{x}_i &= \frac{\alpha_i}{\beta_i} && \text{mit } \beta_i | \lvert D \rvert \\
+\Rightarrow \lvert D \rvert (a_j^T\hat{x}-b_j) \in \mathbb Z \\
+\Rightarrow a_j^T\hat{x} - b_j \leq 0 \forall 0
+\end{align*}
+\end{proof}
+\begin{lemma}
+Wenn ein LSI-System der Eingabegröße $L$ eine Lösung hat, dann hat die Menge der Lösungen innerhalb der Kugel $\{x:\Vert x \Vert \leq n2^L \}$ ein Volumen $\geq 2^{-(n+2)L}$.
+\end{lemma}
+\begin{proof}
+Wenn $Ax < b$ eine Lösung hat, dann hat auch $Ax<b, -2^L< x_i < 2^L, i = 1,\cdots,n$ eine Lösung.
+Das Polytop $Ax \leq b, -2^L \leq x_i \leq 2^L$ einen inneren Punkt.
+Es existieren folglich $n+1$ affin unabhängige Ecken $\{v_0,\dotsc, v_n\}$ in dem Polytop.
+Aus der Konvxität folgt, dass alle inneren Punkte der konvexen Hülle von $\{v_0,\dotsc, v_n\}$ auch automtatisch Lösungen von $Ax < b$ innerhalb der Kugel $\Vert x \Vert \leq n2^L$ sind.
+Das Volumen dieser konvexen Hülle ( in diesem Fall ein Simplex ) ist
+\begin{align*}
+\frac{1}{n!} \left \lvert \det \begin{pmatrix}
+1 & 1 & \hdots &1 \\
+v_0 & v_1 & \hdots & v_n 
+\end{pmatrix} \right \rvert &\neq 0
+\end{align*}
+Wir wissen, jede Ecke kann man schreiben als
+\begin{align*}
+v_i &= \frac{u_i}{D_i} && \text{mit } u_i \in \mathbb Z^n, \lvert D_i \rvert \leq 2^L
+\end{align*}
+Daher hat die Determinate der Matrix im Nenner $\prod \lvert D_i \rvert$.
+Das Volumen ist folglich 
+\begin{align*}
+\geq (n! \prod_{i=0}^n \lvert D_i \rvert )^{-1} &\geq \frac{1}{2^L}\frac{1}{2^L}^{n+1}
+\end{align*}
+\end{proof}
+\begin{theorem}
+Der Elipsoid-Algorithmus entscheidet korrekt, ob das LSI-System eine Lösung hat.
+\end{theorem}
+\begin{proof}
+Wenn der Algorithmus einen zulässigen Punkt $t_k$ bei Schritt 2 liefert, dann ist er korrekt\newline
+\emph{Annahme: Der Algorithmus liefert "NEIN" und es gibt trotzdem eine Lösung}\newline
+Wegen dem obigen Lemma, gibt es eine Menge $S$ von Lösungen innerhalb der Kugel $E_0 = \{x\in \mathbb R^{-1} | x^TB_0^{-1} x\leq 1 \}$ mit Volumen $\geq 2^{-(n+2)L}$.
+Folglich ist $E_0 = \{x\in \mathbb R^{-1} | x^Tx\leq n^22^{2L} \} = \{x\in \mathbb R^{-1} | \Vert x \Vert \leq n2^{L} \}$.
+Wegen dem Satz ist $S \subset E_j , j = 0, \dotsc , K$ und es gilt 
+\begin{align*}
+\vol(E_k) &< \vol(E_0) \cdot 2^{-\frac{K}{2(n+1)}} \\
+	&= \vol( E_0 ) \cdot 2^{-16n(n+1)L]{2(n+1)}} \\
+	&< \underbrace{(2n^22^{2L})^n}_{\text{Würfel}} \cdot 2^{-8nL} \\
+	&< 2^{-(n+2)L}
+\end{align*}
+Dies ist aber ein Widerspruch zum Lemma.
+\end{proof}
 
