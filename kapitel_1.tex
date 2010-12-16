@@ -763,7 +763,7 @@ end
 \min(-x_1 + 3x_2 ) \\
 x_1 - x_2 + x_3 &= 4 \\
 2x_1 + x_2 + x_4 &= 14 \\
--x_1 + x_2 + x_5 &= 8 \\
+-x_1 + x_2 + x_5 &= 8 \\\gtrless
 x_1 + 2x_2 -x_6 = 4 \\
 x_1 + 2x_2 = 10
 \end{align*}
@@ -1093,4 +1093,135 @@ Wegen dem Satz ist $S \subset E_j , j = 0, \dotsc , K$ und es gilt
 \end{align*}
 Dies ist aber ein Widerspruch zum Lemma.
 \end{proof}
+
+\begin{theorem}
+Gegeben sei eine Menge von Vektoren $a_i \in \mathbb R^n$ für $i = 1,\dotsc,m$ und ein Vektor $c\in \mathbb R^n$.
+Dann sind folgende Aussagen äquivalent:
+\begin{enumerate}[(a)]
+\item Wenn $y^Ta_i \geq 0$ für alle $1\leq i \leq m$ gilt, dann gilt $y^Tc \leq 0$.
+\item $c \in K(a_1,\dotsc,a_m)$
+\end{enumerate}
+
+\end{theorem}
+\begin{proof}
+\begin{description}
+\item{ b nach a }
+Es sei $c = \sum_{i=1}^m \pi_i a_i $ mit $\pi_i \geq 0 \forall 1 \leq i \leq m$.
+Dann gilt:
+\begin{align*}
+y^Tc &= \sum_{i=1}^m \pi_i (y^T a_i) \geq 0
+\end{align*}
+da $y^Ta_i \geq 0 \and \pi_i \geq 0$ für alle $1 \leq i \leq m$ gilt.
+\item{ a nach b }
+Wir betrachten das LP $min c^Ty, a_i^T y \geq 0, y \gtrless 0$.
+Das Problem ist zulässig, da $y = 0$ eine mögliche Lösung ist.
+Wegen Bedingung (a) folgt nämlich aus $a_i^T \geq 0 $ für $1\leq i \leq m$ stets $c^Ty \geq 0$.
+Daher hat auch das duale Problem $max \vec{0}, \pi^T a_j =c_j$ für $j=1,\dotsc,m$ und $\pi \geq 0$ eine zulässige Lösung.
+Also gibt es ein $\pi \in \mathbb R^m$ mit 
+\begin{align*}
+\pi^T A &= \pi^T ( A_1 \dotsc A_m ) \\
+&= c^T \\
+&= \pi^T \begin{pmatrix}
+a^T_1 \\
+\vdots \\
+a^T_m
+\end{pmatrix} \\
+&= \sum_{i=1}^m  \pi_i a_i^T \text{ und } \pi \geq 0
+\end{align*}
+Also ist $c \in K(a_1,\dotsc,a_m)$.
+\end{description}
+\end{proof}
+
+\section{Anwendung}
+
+\begin{definition}
+Gegeben sie ein Kantenbewerteter Digraph $(D,C)$ der zwei ausgezeichnete Knoten $s,t \in V$ mit $\forall v \in V: (t,v) \notin E \and (v,s) \notin E$ besitzt. 
+Ein \Begriff{Fluss} $f$ in $D$ mit einer vorgegebenen Größe $w \in \mathbb Z^+$ ist ein Vektor $f \in \mathbb R^{\lvert E \rvert}$, so dass die folgenden Bedingungen erfüllt sind:
+\begin{align*}
+\sum_{(u,v) \in E} f(u,v) &= \sum_{(v,u) \in E} f(v,u) \forall v \in V \setminus \{s,t\} \tag{Flusserhaltungsbedingung 1}\label{eq:flusserhaltung_1}\\
+w &= \sum_{(s,u) \in E}f(s,u) = \sum_{(u,t) \in E}f(u,t) \tag{Flusserhaltungsbedingung 2}\label{eq:flusserhaltung_2}
+\end{align*}
+Die Kosten des Flusses sind gegeben durch $\sum_{(u,v)\in E} c(u,v) f(u,v)$.
+\end{definition}
+\begin{example}
+Im folgenden Digraphen haben wir einen Fluss der Größe $w=1$ mit Kosten $6$ dargestellt.
+% hier dann der graph
+Es ergibt sich die Adjacenzmatrix:
+\begin{align*}
+A &= \begin{pmatrix}
+1 & 1 & 0 & 0 & 0\\
+-1 & 0 & 1 & 1 & 0\\
+0 & -1 & -1 & 0 & 1 \\
+0 & 0 & 0 & -1 & -1
+\end{pmatrix}
+\end{align*}
+Um eine allgemeine LP-Formulierung zu bekommen, nehmen wir für jed Kante $e_j$ eine Variable $f$, dei den Fluss durch $e_j$ darstellt. Die \eqref{eq:flusserhaltung_1} und \eqref{eq:flusserhaltung_2} liefern:
+\begin{align*}
+a_i^T f &= 0 &\text{für } i \neq s,t 
+\end{align*}
+Ein Pfad von $s$ nach $t$ kann dargestllt werden, als ein positiver gannzzahliger Fluss mit Wert $w=1$, der $s$ verlässt und $t$ erreicht.
+Solch ein Fluss erfüllt folgende Bedingungen:
+\begin{align*}
+A f &= \begin{pmatrix}
++1\\
+\vdots\\
+-1\end{pmatrix}
+& \text{ mit } s=1, t=n, f\geq 0 \text{ und Kosten } c^Tf
+\end{align*}
+\begin{quote}
+\textbf{Bemerkung:} Die 4 Gleichungen in unserem Problem sind redundant, so dass die letzte Gleichung weggelassen werden kann.
+\end{quote}
+\begin{align*}
+\begin{pmatrix}
+0 & 1 & 2 & 2 & 3 & 1\\
+1 & 1 & 1 & 0 & 0 & 0\\
+0 & -1 & 0 & 1 & 1 & 0\\
+0 & 0 & -1 & -1 & 0 & 1
+\end{pmatrix}
+&\rightarrow \begin{pmatrix}
+-4 & 0 & -1 & 0 & 0 & 0\\
+1 & 1 & 1 & 0 & 0 & 0\\
+1 & 0 & \underline{1} & 1 & 1 & 0\\
+0 & 0 & -1 & -1 & 0 & 1
+\end{pmatrix} \rightarrow \\
+\begin{pmatrix}
+-3 & 0 & 0 & 1 & 1 & 0\\
+0 & 1 & 0 & -1 & -1 & 0\\
+1 & 0 & 1 & 1 & 1 & 0\\
+1 & 0 & 0 & 0 & 1 & 1
+\end{pmatrix}
+\end{align*}
+Eine Basislösung entspricht $\lvert v \rvert -1$ Kanten, eine Teilmenge davon entspricht einenm Pfad von $s$ nach$t$.
+Hier haben wir zunächst $e_1$ und $e_4$ gewählt mit den Kosten $4$. Das Optimum ist dann die Wahl von $e_2$ und $e_5$ mit Kosten $3$.
+\end{example}
+Das Duale Problem mit Variablen $\pi_i$ für jeden Knoten ist gegeben durch:
+\begin{align*}
+\max \pi_s - \pi_t\\
+\pi^T A  \leq c^T \\
+\pi \gtrless 0
+\end{align*}
+Die Ungleichungen für alle Kannten $(i,j) \in E $ sehen wie folgt aus: $\pi_i - \pi_j \leq c_{i,j}$.
+Die Komplementaritätsbedingungen haben eine einfache Interpretation in diesem Problem. 
+Ein Pfad $f$ und eine Zuordnung $\pi$ sind optimal, genau dann wenn:
+\begin{enumerate}[(a)]
+\item für jede Kannte $e_j$ mit $f_j > 0$ die zugehörige Ungleichung eine Gleichung ist.
+\item für jede strikte Ungleichung liegt die zugehörige Kannte nicht auf dem kürzesten Pfad.
+\end{enumerate}
+
+%\section{Dualer Simplex}
+
+\section{Max-Min Resource-Sharing}
+Wir betrachten das Problem:
+\begin{align*}
+\max \lambda \\
+f_i ( x_1, \dotsc, x_N ) \geq \lambda \\
+( x_1, \dotsc, x_N ) \in B
+\end{align*}
+Mit $B \subset \mathbb R$ eine dichte, konvexe Menge.
+Das Optimum ist gegeben durch
+\begin{align*}
+\lambda* &\colon= \max \{\lambda ; f(x) \geq \lambda (1,\dotsc,1), x \in B \} 
+\end{align*}
+
+
 
